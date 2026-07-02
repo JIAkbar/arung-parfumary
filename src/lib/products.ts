@@ -23,13 +23,39 @@ export interface Product {
   bottleColor: string;
 }
 
-export const WHATSAPP_NUMBER = "6281234567890";
+export const WHATSAPP_NUMBER = "6289900447098";
 
 // Harga mulai seragam untuk semua racikan
 export const HARGA_MULAI_DEFAULT = 20000;
 
 export function whatsappOrderUrl(namaProduk: string) {
-  const pesan = `Halo, saya mau tanya/pesan racikan "${namaProduk}" dari Arung Wangi.`;
+  const pesan = [
+    `Halo Arung Wangi, saya mau pesan racikan *${namaProduk}*.`,
+    "",
+    "Format pesanan saya:",
+    "Nama:",
+    "Ukuran (ml):",
+    "Jumlah:",
+    "Alamat:",
+    "",
+    "Mohon info total harga & cara pembayarannya. Terima kasih!",
+  ].join("\n");
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(pesan)}`;
+}
+
+export function whatsappGeneralUrl() {
+  const pesan = [
+    "Halo Arung Wangi, saya mau tanya-tanya / pesan racikan.",
+    "",
+    "Format pesanan saya:",
+    "Nama:",
+    "Racikan yang diminati:",
+    "Ukuran (ml):",
+    "Jumlah:",
+    "Alamat:",
+    "",
+    "Terima kasih!",
+  ].join("\n");
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(pesan)}`;
 }
 

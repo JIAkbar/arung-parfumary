@@ -1,4 +1,4 @@
-import { WHATSAPP_NUMBER } from "@/lib/products";
+import { whatsappGeneralUrl } from "@/lib/products";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Kontak — Arung Wangi" };
@@ -17,7 +17,7 @@ export default function KontakPage() {
         hubungi kami langsung lewat WhatsApp.
       </p>
       <a
-        href={`https://wa.me/${WHATSAPP_NUMBER}`}
+        href={whatsappGeneralUrl()}
         target="_blank"
         rel="noreferrer"
         className="mt-8 inline-block rounded-full bg-gold px-10 py-3 text-sm font-medium text-white transition-colors hover:bg-gold-light"
