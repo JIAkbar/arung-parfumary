@@ -3,7 +3,7 @@
 # claude.md — Arung Perfumery (brand: Arung Wangi)
 
 > Konteks proyek untuk dilanjutkan sesi berikutnya.
-> Diperbarui: 2026-07-03 (sesi #1 — scaffold awal)
+> Diperbarui: 2026-07-03 (sesi #2 — redesign navbar/logo/tema/transisi + deploy)
 
 ---
 
@@ -44,6 +44,55 @@ Tujuan: pelanggan lihat katalog racikan → tertarik secara visual → klik
 
 ---
 
+## ✅ Progress Sesi #2 (2026-07-03)
+
+- **Nomor WhatsApp beneran**: `6289900447098` (bukan placeholder lagi) di
+  `WHATSAPP_NUMBER` (`src/lib/products.ts`)
+- **Format pesan WA terstruktur** — dua fungsi di `src/lib/products.ts`:
+  `whatsappOrderUrl(namaProduk)` (dipakai di halaman detail produk, prefill
+  nama racikan + format Nama/Ukuran/Jumlah/Alamat) dan
+  `whatsappGeneralUrl()` (dipakai di Footer & Kontak, format sama tanpa
+  nama produk)
+- **Instagram dihapus** dari `Footer.tsx` dan `kontak/page.tsx` — dianggap
+  kurang mewah, sengaja tidak dipasang dulu
+- **Redesign visual** (spec: `docs/superpowers/specs/2026-07-03-arung-wangi-redesign-design.md`,
+  plan: `docs/superpowers/plans/2026-07-03-arung-wangi-redesign.md`) —
+  kombinasi dari 3 opsi yang dipresentasikan (fondasi "Warm Parchment
+  Refined" + logo & transisi dari "Cinematic Hybrid"):
+  - Token warna digeser ke brass/parchment (`--gold: #9c6a2b`,
+    `--background: #f7f1e4`, dst) + token baru `--gold-hairline` di
+    `globals.css`
+  - `BrandMark.tsx` (baru) — logo swirl mark SVG, dipakai di Header & Footer
+  - `Header.tsx` — navbar diracik ulang (garis emas tipis, hover dot emas)
+    + **menu mobile** (hamburger, panel turun, tutup otomatis saat ganti
+    halaman/`Escape`) — sebelumnya navbar tidak responsive sama sekali
+  - `PageTransition.tsx` (baru) — animasi **gold-wipe** saat pindah
+    halaman (bilah emas full-bleed menyapu layar), dipasang di
+    `layout.tsx` membungkus `{children}`. Hormat `prefers-reduced-motion`
+    (skip animasi total, bukan cuma dipercepat)
+- **Dev server launcher**: `start-dev.bat` (di root project & di worktree)
+  — auto-buka browser ke `http://localhost:3001` (port 3001 dipilih
+  supaya tidak bentrok dengan GitLab lokal yang biasanya pakai port 3000)
+- **Git remote & push**: repo GitHub dibuat user di
+  `https://github.com/JIAkbar/arung-parfumary` → di-push ke branch `main`
+- **Deploy ke Cloudflare Pages**: LIVE di
+  **https://arung-parfumary.pages.dev**
+  - `next.config.ts` diset `output: "export"` (situs ini murni statis,
+    tanpa API routes/SSR, jadi static export paling simpel & robust —
+    bukan pakai adapter Workers/`next-on-pages`)
+  - Project Cloudflare Pages dibuat via `wrangler pages project create
+    arung-parfumary --production-branch=main` (nama project harus persis
+    `arung-parfumary` supaya subdomain-nya cocok)
+  - Deploy manual: `npx wrangler pages deploy out --project-name=arung-parfumary --branch=main`
+  - **Belum auto-deploy** dari GitHub push — ini masih upload manual
+    sekali jalan. Kalau mau auto-deploy tiap push, perlu salah satu:
+    (a) sambungkan repo lewat dashboard Cloudflare (Settings → Builds →
+    Connect to Git, butuh klik OAuth GitHub manual oleh user), atau
+    (b) GitHub Actions workflow yang jalankan `wrangler pages deploy`
+    (belum dibuat)
+
+---
+
 ## 📁 Struktur File
 
 ```
@@ -65,9 +114,14 @@ Arung Perfumery/
 │   │   ├── ProductCard.tsx
 │   │   ├── PyramidNotes.tsx / MainAccords.tsx
 │   │   ├── BottleIllustration.tsx  ← SVG original, client component (useId)
+│   │   ├── BrandMark.tsx           ← logo swirl mark SVG (sesi #2)
+│   │   ├── PageTransition.tsx      ← animasi gold-wipe antar halaman (sesi #2)
 │   │   └── Reveal.tsx              ← scroll-reveal wrapper (framer-motion)
 │   └── lib/
-│       └── products.ts             ← DATA PRODUK — tambah racikan baru di sini
+│       └── products.ts             ← DATA PRODUK + WHATSAPP_NUMBER + whatsappOrderUrl/whatsappGeneralUrl
+├── docs/superpowers/specs/         ← spec desain (mis. redesign navbar/logo/tema)
+├── docs/superpowers/plans/         ← plan implementasi per spec
+└── start-dev.bat                   ← launcher dev server (auto-buka browser, port 3001)
 ```
 
 ---
@@ -99,7 +153,12 @@ foto racikan asli, ganti jadi `<Image>` Next.js.
    komponen dari 21st.dev yang formatnya React+Tailwind)
 4. Data produk **statis** (TypeScript array, bukan database) — sesuai
    scope awal (belum perlu backend/CMS)
-5. Deploy rencana: **Cloudflare Pages**, repo terpisah dari Parfumary
+5. Deploy: **Cloudflare Pages** (`output: "export"` di `next.config.ts`,
+   static export murni — bukan Workers/`next-on-pages` karena situs ini
+   tidak punya API routes/SSR), repo terpisah dari Parfumary
+6. Warna: keluarga brass/parchment (`--gold: #9c6a2b`, dst di
+   `globals.css`) — sengaja digeser dari oranye/terracotta generik ke
+   brass supaya nggak terasa "AI generic cream+terracotta"
 
 ---
 
@@ -111,8 +170,18 @@ foto racikan asli, ganti jadi `<Image>` Next.js.
   Turbopack yang sama meski sudah pakai `--webpack` kadang masih perlu cd
   asli (sudah diverifikasi aman dengan `cd /d` ke short-path lalu
   `npm run dev`)
-- Ganti `WHATSAPP_NUMBER` di `src/lib/products.ts` sebelum live beneran
 - Nama brand di UI = **"Arung Wangi"** (bukan "Arung Perfumery" — itu cuma
   nama folder/repo)
-- Belum ada remote GitHub — kalau user minta push, perlu `git remote add`
-  dulu (belum pernah di-setup)
+- `WHATSAPP_NUMBER` sudah nomor asli (`6289900447098`) — kalau ganti,
+  edit di `src/lib/products.ts`, dua fungsi order URL ikut otomatis
+- Remote GitHub: `https://github.com/JIAkbar/arung-parfumary`, branch
+  `main`. Push langsung ke `main` (bukan lewat PR) — itu keputusan user
+  di sesi #2, bukan default
+- Deploy Cloudflare Pages **manual** (`wrangler pages deploy out
+  --project-name=arung-parfumary --branch=main`), belum auto-deploy dari
+  git push — lihat catatan di Progress Sesi #2 kalau mau setup itu
+- Kalau tambah halaman/komponen baru yang butuh API routes atau server
+  action, static export (`output: "export"`) harus dicabut dulu dari
+  `next.config.ts` sebelum build — dan alur deploy Cloudflare-nya perlu
+  diganti ke adapter Workers (`@opennextjs/cloudflare`), bukan lagi
+  `wrangler pages deploy out` langsung
