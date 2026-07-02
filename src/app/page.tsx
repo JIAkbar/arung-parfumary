@@ -1,5 +1,6 @@
 import Hero from "@/components/Hero";
 import ProductCard from "@/components/ProductCard";
+import Reveal from "@/components/Reveal";
 import { products } from "@/lib/products";
 import Link from "next/link";
 
@@ -26,8 +27,10 @@ export default function Home() {
           </Link>
         </div>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
-          {unggulan.map((product) => (
-            <ProductCard key={product.slug} product={product} />
+          {unggulan.map((product, i) => (
+            <Reveal key={product.slug} delay={i * 0.08}>
+              <ProductCard product={product} />
+            </Reveal>
           ))}
         </div>
       </section>

@@ -2,6 +2,7 @@ import { getProductBySlug, products, whatsappOrderUrl } from "@/lib/products";
 import BottleIllustration from "@/components/BottleIllustration";
 import PyramidNotes from "@/components/PyramidNotes";
 import MainAccords from "@/components/MainAccords";
+import Reveal from "@/components/Reveal";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
@@ -89,8 +90,12 @@ export default async function ProdukDetailPage({
       </div>
 
       <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-2">
-        <PyramidNotes notes={product.notes} />
-        <MainAccords accords={product.mainAccords} />
+        <Reveal>
+          <PyramidNotes notes={product.notes} />
+        </Reveal>
+        <Reveal delay={0.1}>
+          <MainAccords accords={product.mainAccords} />
+        </Reveal>
       </div>
     </section>
   );

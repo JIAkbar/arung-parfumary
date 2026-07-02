@@ -25,6 +25,9 @@ export interface Product {
 
 export const WHATSAPP_NUMBER = "6281234567890";
 
+// Harga mulai seragam untuk semua racikan
+export const HARGA_MULAI_DEFAULT = 20000;
+
 export function whatsappOrderUrl(namaProduk: string) {
   const pesan = `Halo, saya mau tanya/pesan racikan "${namaProduk}" dari Arung Wangi.`;
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(pesan)}`;
@@ -35,7 +38,7 @@ export const products: Product[] = [
     slug: "gilded-noir",
     nama: "Gilded Noir",
     grade: "Premium",
-    hargaMulai: 85000,
+    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: [15, 30, 50],
     ringkasan: "Hangat, manis, dengan sentuhan kopi dan amber yang membekas lama.",
     deskripsi:
@@ -63,7 +66,7 @@ export const products: Product[] = [
     slug: "velvet-santal",
     nama: "Velvet Santal",
     grade: "Premium",
-    hargaMulai: 90000,
+    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: [15, 30, 50],
     ringkasan: "Kayu cendana lembut berpadu bunga putih dan sedikit rempah.",
     deskripsi:
@@ -86,7 +89,7 @@ export const products: Product[] = [
     slug: "azure-neroli",
     nama: "Azure Neroli",
     grade: "Medium",
-    hargaMulai: 55000,
+    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: [15, 30],
     ringkasan: "Segar, citrus-aquatic — cocok dipakai harian dan cuaca panas.",
     deskripsi:

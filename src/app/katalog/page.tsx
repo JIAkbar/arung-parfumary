@@ -1,4 +1,5 @@
 import ProductCard from "@/components/ProductCard";
+import Reveal from "@/components/Reveal";
 import { products } from "@/lib/products";
 import type { Metadata } from "next";
 
@@ -22,8 +23,10 @@ export default function KatalogPage() {
         </p>
       </div>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
-        {products.map((product) => (
-          <ProductCard key={product.slug} product={product} />
+        {products.map((product, i) => (
+          <Reveal key={product.slug} delay={(i % 3) * 0.08}>
+            <ProductCard product={product} />
+          </Reveal>
         ))}
       </div>
     </section>
