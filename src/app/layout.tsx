@@ -17,7 +17,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "L'Atelier Parfum — Racikan Parfum Artisan",
+  title: "Arung Wangi — Racikan Parfum Artisan",
   description:
     "Parfum racikan artisan, diracik sendiri dengan bibit fragrance oil premium.",
 };

@@ -3,7 +3,7 @@ import { products } from "@/lib/products";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Katalog — L'Atelier Parfum",
+  title: "Katalog — Arung Wangi",
 };
 
 export default function KatalogPage() {

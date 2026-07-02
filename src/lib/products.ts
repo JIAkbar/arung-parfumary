@@ -26,7 +26,7 @@ export interface Product {
 export const WHATSAPP_NUMBER = "6281234567890";
 
 export function whatsappOrderUrl(namaProduk: string) {
-  const pesan = `Halo, saya mau tanya/pesan racikan "${namaProduk}" dari L'Atelier Parfum.`;
+  const pesan = `Halo, saya mau tanya/pesan racikan "${namaProduk}" dari Arung Wangi.`;
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(pesan)}`;
 }
 

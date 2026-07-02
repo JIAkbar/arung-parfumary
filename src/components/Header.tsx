@@ -14,7 +14,7 @@ export default function Header() {
           href="/"
           className="font-serif text-xl font-semibold tracking-tight text-foreground"
         >
-          L&rsquo;Atelier Parfum
+          Arung Wangi
         </Link>
         <nav className="flex items-center gap-6">
           {NAV.map((item) => (

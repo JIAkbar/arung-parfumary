@@ -16,7 +16,7 @@ export default function Hero() {
           Aroma yang Diracik, Bukan Sekadar Dijual
         </h1>
         <p className="max-w-xl text-base text-background/70 md:text-lg">
-          Setiap botol L&rsquo;Atelier Parfum diracik tangan menggunakan bibit
+          Setiap botol Arung Wangi diracik tangan menggunakan bibit
           fragrance oil premium — dirancang untuk yang mencari karakter, bukan
           sekadar label.
         </p>

@@ -16,7 +16,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const product = getProductBySlug(slug);
-  return { title: product ? `${product.nama} — L'Atelier Parfum` : "Produk" };
+  return { title: product ? `${product.nama} — Arung Wangi` : "Produk" };
 }
 
 export default async function ProdukDetailPage({

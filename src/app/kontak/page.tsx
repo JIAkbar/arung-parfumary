@@ -1,7 +1,7 @@
 import { WHATSAPP_NUMBER } from "@/lib/products";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Kontak — L'Atelier Parfum" };
+export const metadata: Metadata = { title: "Kontak — Arung Wangi" };
 
 export default function KontakPage() {
   return (

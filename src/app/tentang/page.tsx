@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Tentang — L'Atelier Parfum" };
+export const metadata: Metadata = { title: "Tentang — Arung Wangi" };
 
 export default function TentangPage() {
   return (
@@ -13,7 +13,7 @@ export default function TentangPage() {
       </h1>
       <div className="mt-6 space-y-4 text-sm leading-relaxed text-ink-muted">
         <p>
-          L&rsquo;Atelier Parfum lahir dari kecintaan pada aroma — bukan dari
+          Arung Wangi lahir dari kecintaan pada aroma — bukan dari
           pabrik besar, tapi dari meja kerja kecil tempat setiap racikan
           diuji, disesuaikan, dan disempurnakan satu per satu.
         </p>
