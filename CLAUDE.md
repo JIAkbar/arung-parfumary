@@ -139,6 +139,26 @@ HARGA_MULAI_DEFAULT`.
 generated, warna beda per produk via prop `bottleColor`). Kalau nanti ada
 foto racikan asli, ganti jadi `<Image>` Next.js.
 
+### Daftar Referensi Racikan (internal, jangan tampil di website)
+
+Supaya kita (bukan pengunjung situs) tahu racikan mana terinspirasi dari
+parfum apa. **Sengaja tidak ditampilkan di UI publik** — menyebut nama
+brand asli di halaman produk berisiko dibaca sebagai klaim tiruan/afiliasi
+dengan brand tsb (potensi masalah merek dagang), apalagi racikan ini bukan
+produk resmi brand manapun (lihat disclaimer di footer).
+
+| Racikan (di web) | Terinspirasi dari | Link Fragrantica |
+|---|---|---|
+| Gilded Noir | Tidak tercatat spesifik (genre coffee-gourmand umum, dibuat sesi #1) | — |
+| Velvet Santal | Tidak tercatat spesifik (genre woody floral umum, dibuat sesi #1) | — |
+| Azure Neroli | Tidak tercatat spesifik (genre citrus-aquatic umum, dibuat sesi #1) | — |
+| Verdant Fig | Mykonos — Down to Earth | fragrantica.com/perfume/Mykonos/Down-to-Earth-120471.html |
+| Rosé Bergamot | Mykonos — Monaco Royale | fragrantica.com/perfume/Mykonos/Monaco-Royale-121113.html |
+| Praline Tonka | Mykonos — Cafe Drops | fragrantica.com/perfume/Mykonos/Cafe-Drops-120463.html |
+
+Kalau tambah racikan baru lewat alur di atas, **selalu update tabel ini**
+juga — jangan cuma isi `fragranticaUrl` di `products.ts`.
+
 ---
 
 ## 🔧 Keputusan Teknis
