@@ -44,13 +44,22 @@ export default async function ProdukDetailPage({
           />
         </div>
         <div>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap items-center gap-1.5">
             <span className="w-fit rounded-full border border-gold/40 px-2 py-0.5 text-[10px] uppercase tracking-wider text-gold">
               {product.grade}
             </span>
             <span className="w-fit rounded-full border border-border px-2 py-0.5 text-[10px] uppercase tracking-wider text-ink-muted">
               {product.gender}
             </span>
+            <span className="mx-0.5 h-3 w-px bg-border" aria-hidden="true" />
+            {product.waktuPakai.map((waktu) => (
+              <span
+                key={waktu}
+                className="w-fit rounded-full bg-background px-2 py-0.5 text-[10px] uppercase tracking-wider text-ink-muted"
+              >
+                {waktu}
+              </span>
+            ))}
           </div>
           <h1 className="mt-3 font-serif text-4xl text-foreground">
             {product.nama}
@@ -58,20 +67,6 @@ export default async function ProdukDetailPage({
           <p className="mt-4 text-sm leading-relaxed text-ink-muted">
             {product.deskripsi}
           </p>
-
-          <p className="mt-5 text-xs uppercase tracking-[0.2em] text-gold">
-            Waktu Terbaik
-          </p>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {product.waktuPakai.map((waktu) => (
-              <span
-                key={waktu}
-                className="rounded-full bg-background px-3 py-1 text-xs text-foreground"
-              >
-                {waktu}
-              </span>
-            ))}
-          </div>
 
           <div className="mt-6 flex flex-wrap gap-2">
             {product.volumeTersedia.map((vol) => (
