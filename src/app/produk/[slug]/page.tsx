@@ -1,9 +1,11 @@
 import { getProductBySlug, products } from "@/lib/products";
 import { HARGA_TEASER } from "@/lib/hargaKalkulator";
+import { getRelatedProducts } from "@/lib/relatedProducts";
 import BottleIllustration from "@/components/BottleIllustration";
 import PyramidNotes from "@/components/PyramidNotes";
 import MainAccords from "@/components/MainAccords";
 import HargaKalkulator from "@/components/HargaKalkulator";
+import ProductCard from "@/components/ProductCard";
 import Reveal from "@/components/Reveal";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -38,6 +40,8 @@ export default async function ProdukDetailPage({
   const { slug } = await params;
   const product = getProductBySlug(slug);
   if (!product) notFound();
+
+  const related = getRelatedProducts(product, products, 4);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -119,6 +123,19 @@ export default async function ProdukDetailPage({
           <MainAccords accords={product.mainAccords} />
         </Reveal>
       </div>
+
+      {related.length > 0 && (
+        <div className="mt-16 border-t border-gold-hairline pt-12">
+          <h2 className="font-serif text-2xl text-foreground">Racikan Serupa</h2>
+          <div className="mt-6 grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-4">
+            {related.map((p, i) => (
+              <Reveal key={p.slug} delay={(i % 4) * 0.08}>
+                <ProductCard product={p} />
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   );
 }

@@ -3,7 +3,7 @@
 # claude.md — Arung Perfumery (brand: Arung Wangi)
 
 > Konteks proyek untuk dilanjutkan sesi berikutnya.
-> Diperbarui: 2026-07-03 (sesi #7 — 26 racikan baru, total 69, log duplikat)
+> Diperbarui: 2026-07-03 (sesi #8 — fitur "Racikan Serupa" di halaman detail)
 
 ---
 
@@ -359,6 +359,33 @@ permintaan user.
 
 ---
 
+## ✅ Progress Sesi #8 (2026-07-03) — Racikan Serupa
+
+- **`src/lib/relatedProducts.ts`** (baru) — `getRelatedProducts(product,
+  allProducts, count=4)`. Scoring murni dari data yang sudah ada (tidak
+  ada field baru di `Product`): `+10` per family aroma yang overlap
+  (pakai `accordFamily()` yang sudah ada di `accordFamily.ts`, dibandingkan
+  sebagai `Set` supaya tiap family cuma dihitung sekali meski muncul di
+  beberapa `mainAccords`), `+5` kalau gender cocok atau salah satunya
+  Unisex, `+3` per `waktuPakai` yang overlap. Sort descending, ambil N
+  teratas (exclude produk itu sendiri)
+- **Section "Racikan Serupa"** ditambahkan di bawah Piramida/Main Accords
+  di `produk/[slug]/page.tsx` — render 4 `ProductCard` (komponen yang
+  sama persis dipakai di Katalog, tidak ada komponen baru) dari hasil
+  `getRelatedProducts(product, products, 4)`. Section disembunyikan kalau
+  `related.length === 0` (harusnya tidak pernah terjadi selama katalog
+  masih ≥5 racikan, tapi defensif untuk masa depan)
+- Alasan fitur ini: di skala 69 racikan, browsing linear katalog (infinite
+  scroll) makin capek — begitu user ketemu 1 racikan yang disukai, mereka
+  butuh jalan pintas ke racikan lain yang mirip tanpa balik ke katalog
+- Verifikasi: `tsc --noEmit` bersih, `eslint` bersih, `next build
+  --webpack` sukses 144 halaman, spot-check `apple-lavender` di preview
+  browser — section muncul dengan 4 racikan woody/gourmand yang masuk
+  akal (Hazelnut Amberwood, Oud Mint, Smoked Cherry, Candy Apple Leather),
+  tidak ada error console
+
+---
+
 ## 📁 Struktur File
 
 ```
@@ -389,7 +416,8 @@ Arung Perfumery/
 │       ├── products.ts             ← DATA PRODUK + WHATSAPP_NUMBER + whatsappOrderUrl/whatsappGeneralUrl
 │       ├── hargaKalkulator.ts      ← rumus harga per ukuran+konsentrasi (sesi #6, KONSTANTA BIAYA DI SINI)
 │       ├── accordFamily.ts         ← family aroma dari mainAccords (sesi #4)
-│       └── scentMatcher.ts         ← keyword matcher untuk scent finder (sesi #4)
+│       ├── scentMatcher.ts         ← keyword matcher untuk scent finder (sesi #4)
+│       └── relatedProducts.ts      ← scoring "Racikan Serupa" di halaman detail (sesi #8)
 ├── docs/superpowers/specs/         ← spec desain (mis. redesign navbar/logo/tema)
 ├── docs/superpowers/plans/         ← plan implementasi per spec
 └── start-dev.bat                   ← launcher dev server (auto-buka browser, port 3001)
