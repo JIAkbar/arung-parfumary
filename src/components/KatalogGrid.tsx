@@ -22,12 +22,12 @@ function FilterSelect({
   onChange: (value: string) => void;
 }) {
   return (
-    <label className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-ink-muted">
+    <label className="flex flex-col items-center gap-1.5 text-[10px] uppercase tracking-wider text-ink-muted">
       {label}
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="rounded-full border border-border bg-surface px-3 py-1.5 text-xs uppercase tracking-wider text-foreground transition-colors hover:border-gold focus:border-gold focus:outline-none"
+        className="w-full max-w-[9.5rem] truncate rounded-full border border-border bg-surface px-3 py-1.5 text-center text-xs uppercase tracking-wider text-foreground transition-colors hover:border-gold focus:border-gold focus:outline-none"
       >
         {options.map((item) => (
           <option key={item} value={item}>
@@ -81,7 +81,7 @@ export default function KatalogGrid({ products }: { products: Product[] }) {
         />
       </div>
 
-      <div className="mb-10 flex flex-wrap items-center justify-center gap-4">
+      <div className="mx-auto mb-10 grid max-w-md grid-cols-3 gap-3">
         <FilterSelect
           label="Gender"
           options={GENDER_FILTERS}

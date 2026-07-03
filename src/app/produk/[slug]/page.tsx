@@ -137,7 +137,7 @@ export default async function ProdukDetailPage({
         </div>
       </div>
 
-      <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-2">
+      <div className="mt-8 grid grid-cols-1 gap-8 md:mt-16 md:grid-cols-2">
         <Reveal>
           <PyramidNotes notes={product.notes} />
         </Reveal>
