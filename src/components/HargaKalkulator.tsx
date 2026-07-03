@@ -4,6 +4,7 @@ import { useState } from "react";
 import {
   KONSENTRASI_LIST,
   KONSENTRASI_DESKRIPSI,
+  HARGA_TEASER,
   hitungRangeHarga,
   formatRupiah,
   type Konsentrasi,
@@ -11,10 +12,13 @@ import {
 import { whatsappOrderUrl, VOLUME_REQUEST, type Product } from "@/lib/products";
 
 export default function HargaKalkulator({ product }: { product: Product }) {
-  const [volume, setVolume] = useState(product.volumeTersedia[0]);
+  const [volume, setVolume] = useState<number | null>(null);
   const [konsentrasi, setKonsentrasi] = useState<Konsentrasi>("EDP");
 
-  const { low, high } = hitungRangeHarga(volume, product.grade, konsentrasi);
+  const dipilih = volume !== null;
+  const { low, high } = dipilih
+    ? hitungRangeHarga(volume, product.grade, konsentrasi)
+    : { low: 0, high: 0 };
   const hargaText = `${formatRupiah(low)} – ${formatRupiah(high)}`;
 
   return (
@@ -40,45 +44,74 @@ export default function HargaKalkulator({ product }: { product: Product }) {
         Butuh {VOLUME_REQUEST} ml? Bisa request, tinggal sebut di pesan WhatsApp.
       </p>
 
-      <p className="mt-6 text-xs uppercase tracking-[0.2em] text-gold">
-        Konsentrasi
-      </p>
-      <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
-        {KONSENTRASI_LIST.map((k) => (
-          <button
-            key={k}
-            type="button"
-            onClick={() => setKonsentrasi(k)}
-            className={`rounded-xl border px-3 py-2 text-left transition-colors ${
-              konsentrasi === k
-                ? "border-gold bg-gold/10"
-                : "border-border hover:border-gold"
-            }`}
+      {!dipilih ? (
+        <>
+          <p className="mt-6 font-serif text-2xl text-foreground">
+            Mulai {formatRupiah(HARGA_TEASER)}
+          </p>
+          <p className="mt-1 text-xs text-ink-muted">
+            Pilih ukuran di atas untuk lihat harga & pilihan konsentrasi
+            (Cologne/EDT/EDP/Extrait).
+          </p>
+
+          <a
+            href={whatsappOrderUrl(product.nama)}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-4 inline-block rounded-full bg-gold px-8 py-3 text-sm font-medium text-white transition-colors hover:bg-gold-light"
           >
-            <span className="block text-sm font-medium text-foreground">
-              {k}
-            </span>
-            <span className="block text-[11px] text-ink-muted">
-              {KONSENTRASI_DESKRIPSI[k]}
-            </span>
-          </button>
-        ))}
-      </div>
+            Pesan via WhatsApp
+          </a>
+        </>
+      ) : (
+        <>
+          <p className="mt-6 text-xs uppercase tracking-[0.2em] text-gold">
+            Konsentrasi
+          </p>
+          <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+            {KONSENTRASI_LIST.map((k) => (
+              <button
+                key={k}
+                type="button"
+                onClick={() => setKonsentrasi(k)}
+                className={`rounded-xl border px-3 py-2 text-left transition-colors ${
+                  konsentrasi === k
+                    ? "border-gold bg-gold/10"
+                    : "border-border hover:border-gold"
+                }`}
+              >
+                <span className="block text-sm font-medium text-foreground">
+                  {k}
+                </span>
+                <span className="block text-[11px] text-ink-muted">
+                  {KONSENTRASI_DESKRIPSI[k]}
+                </span>
+              </button>
+            ))}
+          </div>
 
-      <p className="mt-6 font-serif text-2xl text-foreground">{hargaText}</p>
-      <p className="mt-1 text-xs text-ink-muted">
-        Estimasi harga {volume} ml {konsentrasi} — harga final dikonfirmasi via
-        WhatsApp.
-      </p>
+          <p className="mt-6 font-serif text-2xl text-foreground">
+            {hargaText}
+          </p>
+          <p className="mt-1 text-xs text-ink-muted">
+            Estimasi harga {volume} ml {konsentrasi} — harga final
+            dikonfirmasi via WhatsApp.
+          </p>
 
-      <a
-        href={whatsappOrderUrl(product.nama, { volumeMl: volume, konsentrasi, hargaText })}
-        target="_blank"
-        rel="noreferrer"
-        className="mt-4 inline-block rounded-full bg-gold px-8 py-3 text-sm font-medium text-white transition-colors hover:bg-gold-light"
-      >
-        Pesan via WhatsApp
-      </a>
+          <a
+            href={whatsappOrderUrl(product.nama, {
+              volumeMl: volume,
+              konsentrasi,
+              hargaText,
+            })}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-4 inline-block rounded-full bg-gold px-8 py-3 text-sm font-medium text-white transition-colors hover:bg-gold-light"
+          >
+            Pesan via WhatsApp
+          </a>
+        </>
+      )}
     </div>
   );
 }

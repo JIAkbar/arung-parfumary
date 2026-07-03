@@ -1,5 +1,5 @@
 import { getProductBySlug, products } from "@/lib/products";
-import { hargaTermurah } from "@/lib/hargaKalkulator";
+import { HARGA_TEASER } from "@/lib/hargaKalkulator";
 import BottleIllustration from "@/components/BottleIllustration";
 import PyramidNotes from "@/components/PyramidNotes";
 import MainAccords from "@/components/MainAccords";
@@ -39,7 +39,6 @@ export default async function ProdukDetailPage({
   const product = getProductBySlug(slug);
   if (!product) notFound();
 
-  const { low: hargaMulai } = hargaTermurah(product);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -49,7 +48,7 @@ export default async function ProdukDetailPage({
     offers: {
       "@type": "Offer",
       priceCurrency: "IDR",
-      price: hargaMulai,
+      price: HARGA_TEASER,
       availability: "https://schema.org/InStock",
     },
   };

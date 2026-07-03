@@ -241,19 +241,25 @@ Tujuan: pelanggan lihat katalog racikan → tertarik secara visual → klik
   - Fungsi: `hitungRangeHarga(volumeMl, grade, konsentrasi)` di
     `hargaKalkulator.ts`
 - **`HargaKalkulator.tsx`** (client component baru) — di halaman detail
-  produk: user pilih ukuran (15/20/30/50 ml) → pilih konsentrasi
-  (Cologne/EDT/EDP/Extrait, default EDP) → range harga muncul real-time.
-  Menggantikan blok statis pill-ukuran + "Mulai Rp" + tombol WA yang lama
+  produk: **sebelum** user pilih ukuran, cuma tampil "Mulai Rp20.000"
+  (lihat `HARGA_TEASER` di bawah) + tombol WA polos, **tanpa** pilihan
+  konsentrasi. Begitu user klik salah satu ukuran (15/20/30/50 ml), BARU
+  pilihan konsentrasi (Cologne/EDT/EDP/Extrait, default EDP) dan range
+  harga asli muncul, update real-time tiap ganti ukuran/konsentrasi. Ini
+  keputusan sengaja dari user (sesi #6 lanjutan) — Rp20.000 dianggap
+  "daya tarik" harga murah yang harus tetap kelihatan di awal, harga asli
+  baru diungkap setelah user mulai berinteraksi
+- **`HARGA_TEASER = 20000`** di `hargaKalkulator.ts` — angka **flat,
+  sengaja TIDAK dihitung dari rumus**, dipakai konsisten di 4 tempat:
+  `ProductCard.tsx` (badge "Mulai Rp..." di katalog), `opengraph-image.tsx`
+  (gambar share), JSON-LD `Product.offers.price`, dan tampilan awal
+  `HargaKalkulator.tsx` sebelum ukuran dipilih. Kalau mau ganti angka
+  teaser-nya, cukup ubah konstanta ini di satu tempat
 - **`whatsappOrderUrl` sekarang punya parameter opsional `OrderDetail`**
-  (`volumeMl`, `konsentrasi`, `hargaText`) — kalau user sudah pilih di
-  kalkulator, pesan WA ter-prefill lengkap dengan konsentrasi & estimasi
-  harga, bukan cuma placeholder kosong
-- **`hargaTermurah(product)`** — dipakai di `ProductCard.tsx` (badge "Mulai
-  Rp...") dan `opengraph-image.tsx` (gambar share), selalu pakai ukuran
-  terkecil yang tersedia + konsentrasi Cologne (termurah)
-- **JSON-LD `Product.offers.price`** di halaman detail sekarang ikut
-  `hargaTermurah`, bukan angka statis — supaya konsisten dengan yang
-  ditampilkan di UI
+  (`volumeMl`, `konsentrasi`, `hargaText`) — kalau user sudah pilih ukuran
+  di kalkulator, pesan WA ter-prefill lengkap dengan konsentrasi &
+  estimasi harga asli; kalau belum pilih, tetap pakai format placeholder
+  kosong seperti biasa
 
 ---
 

@@ -73,9 +73,8 @@ export function formatRupiah(n: number) {
   return `Rp${Math.round(n).toLocaleString("id-ID")}`;
 }
 
-// Harga "mulai dari" buat ProductCard/katalog — ukuran terkecil + konsentrasi
-// termurah yang tersedia untuk produk ini.
-export function hargaTermurah(product: Pick<Product, "volumeTersedia" | "grade">): RangeHarga {
-  const volMin = Math.min(...product.volumeTersedia);
-  return hitungRangeHarga(volMin, product.grade, "Cologne");
-}
+// Harga "hook" yang sengaja ditampilkan flat di ProductCard, OG image, dan
+// tampilan awal halaman produk sebelum user pilih ukuran — angka menarik
+// perhatian ("mulai dari murah"), BUKAN hasil hitung hargaKalkulator. Harga
+// asli (hitungRangeHarga) baru muncul setelah user pilih ukuran botol.
+export const HARGA_TEASER = 20000;

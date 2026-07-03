@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getProductBySlug, products } from "@/lib/products";
-import { hargaTermurah, formatRupiah } from "@/lib/hargaKalkulator";
+import { HARGA_TEASER, formatRupiah } from "@/lib/hargaKalkulator";
 
 export const alt = "Arung Wangi";
 export const size = { width: 1200, height: 630 };
@@ -19,7 +19,7 @@ export default async function OpengraphImage({
   const product = getProductBySlug(slug);
   const nama = product?.nama ?? "Arung Wangi";
   const ringkasan = product?.ringkasan ?? "Racikan Parfum Artisan";
-  const harga = product ? `Mulai ${formatRupiah(hargaTermurah(product).low)}` : "";
+  const harga = product ? `Mulai ${formatRupiah(HARGA_TEASER)}` : "";
   const color = product?.bottleColor ?? "#9c6a2b";
 
   return new ImageResponse(
