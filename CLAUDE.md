@@ -3,7 +3,7 @@
 # claude.md — Arung Perfumery (brand: Arung Wangi)
 
 > Konteks proyek untuk dilanjutkan sesi berikutnya.
-> Diperbarui: 2026-07-03 (sesi #6 — kalkulator harga, dropdown custom, aroma raw)
+> Diperbarui: 2026-07-03 (sesi #7 — 26 racikan baru, total 69, log duplikat)
 
 ---
 
@@ -299,6 +299,66 @@ Tujuan: pelanggan lihat katalog racikan → tertarik secara visual → klik
 
 ---
 
+## ✅ Progress Sesi #7 (2026-07-03) — 26 Racikan Baru (total 69)
+
+- User kirim **48 link Fragrantica sekaligus**, minta dicek duplikat/mirip
+  dulu sebelum ditambah (bukan langsung ditambah semua). Hasil kategorisasi:
+  - **23 baris link → 21 racikan yang sudah ada** (duplikat, tidak
+    ditambah) — daftar lengkap ada di bawah, "Log Link Duplikat Sesi #7"
+  - **7 "flanker"** (varian dari parfum yang linenya sudah ada di katalog,
+    tapi versi/edisi beda — mis. EDT vs Parfum, original vs Intense) — user
+    approve ditambah sebagai racikan terpisah
+  - **19 racikan genuinely baru** — user approve ditambah semua
+  - Total ditambahkan: **26 racikan baru** (43 → **69**)
+- Semua 26 entry baru pakai `volumeTersedia: VOLUME_TERSEDIA_DEFAULT`
+  (tidak ada field harga, sesuai perubahan sesi #6), `gender`/`waktuPakai`
+  terisi mengikuti aturan sesi #3, dan `fragranticaUrl` wajib ada — lihat
+  tabel referensi di bawah untuk daftar lengkap + link masing-masing
+- Verifikasi: `tsc --noEmit` bersih, `eslint` bersih, jumlah `slug` di
+  `products.ts` = 69 (tidak ada duplikat slug, dicek via script Node),
+  `next build --webpack` sukses generate 144 halaman statis
+  (69×2 + 6 halaman lain), spot-check render 2 racikan baru (`Apple
+  Lavender` — entry pertama batch ini, `Passion Vanilla` — entry
+  terakhir) lewat preview browser, tidak ada error console
+
+### Log Link Duplikat Sesi #7 (biar next time tidak perlu dicek ulang)
+
+23 link dari 48 yang dikirim user ternyata sudah tercakup racikan yang
+ada (beberapa parfum dikirim linknya 2× oleh user sendiri). Dicatat di
+sini murni sebagai referensi internal — **bukan** untuk ditambahkan:
+
+| Link yang dikirim (mengarah ke parfum ini) | Sudah tercakup racikan |
+|---|---|
+| Yves Saint Laurent — Y Eau de Parfum (×2 baris dikirim) | Sage Amberwood |
+| Dior — J'adore | Golden Ylang |
+| Dior — Miss Dior Blooming Bouquet | Sweet Pea Peony |
+| Louis Vuitton — Les Sables Roses (×2 baris dikirim) | Raspberry Rose |
+| Creed — Aventus | Pineapple Birch |
+| Versace — Eros (EDT original) | Mint Tonka |
+| Maison Francis Kurkdjian — Baccarat Rouge 540 | Saffron Ambergris |
+| Ex Nihilo — Blue Talisman | Pear Musk |
+| Nautica — Nautica Voyage | Green Apple Lotus |
+| Kayali Fragrances — Yum Pistachio Gelato \| 33 | Pistachio Gelato |
+| Rabanne — 1 Million Lucky | Hazelnut Amberwood |
+| Montale — Intense Cafe | Rose Espresso |
+| Gucci — Gucci Bloom (2017 original) | Jasmine Sambac |
+| Parfums de Marly — Pegasus | Almond Heliotrope |
+| Memo Paris — Marfa | Tuberose Agave |
+| Mancera — Aoud Lemon Mint | Oud Mint |
+| Tom Ford — Cherry Smoke | Smoked Cherry |
+| Cacharel — Amor Amor | Grapefruit Jasmine |
+| Parfums de Marly — Layton Exclusif | Gardenia Coffee |
+| Giorgio Armani — Sì Passione | Blackcurrant Rose |
+| Versace — Eros Parfum (2021) | Litsea Mint |
+
+Kalau user kirim link-link ini lagi di masa depan (sengaja atau tidak
+sengaja terkirim ulang), cukup rujuk tabel ini — tidak perlu riset ulang.
+Ini juga bisa jadi starting point kalau nanti mau bikin "katalog
+kebutuhan" (daftar parfum populer yang sudah/belum direplikasi) sesuai
+permintaan user.
+
+---
+
 ## 📁 Struktur File
 
 ```
@@ -412,6 +472,32 @@ produk resmi brand manapun (lihat disclaimer di footer).
 | Blackcurrant Rose | Giorgio Armani — Sì Passione | fragrantica.com/perfume/Giorgio-Armani/Si-Passione-48002.html |
 | Litsea Mint | Versace — Eros Parfum (2021) | fragrantica.com/perfume/Versace/Eros-Parfum-70090.html |
 | Melon Cappuccino | Antonio Banderas — Blue Seduction (men) | fragrantica.com/perfume/Antonio-Banderas/Blue-Seduction-1088.html |
+| Apple Lavender | Parfums de Marly — Layton | fragrantica.com/perfume/Parfums-de-Marly/Layton-39314.html |
+| Candy Apple Leather | Versace — Eros Eau de Parfum | fragrantica.com/perfume/Versace/Eros-Eau-de-Parfum-62762.html |
+| Lavender Tonka | Yves Saint Laurent — Libre Intense | fragrantica.com/perfume/Yves-Saint-Laurent/Libre-Intense-62318.html |
+| Honey Lavender | Yves Saint Laurent — Libre Le Parfum | fragrantica.com/perfume/Yves-Saint-Laurent/Libre-Le-Parfum-75676.html |
+| Grapefruit Marine | Rabanne — Invictus | fragrantica.com/perfume/Rabanne/Invictus-18471.html |
+| Soap Marine | Rabanne — Invictus Parfum | fragrantica.com/perfume/Rabanne/Invictus-Parfum-90433.html |
+| Absinthe Vanilla | Carolina Herrera — 212 VIP Black | fragrantica.com/perfume/Carolina-Herrera/212-VIP-Black-46093.html |
+| Sea Salt Sage | Jo Malone London — Wood Sage & Sea Salt | fragrantica.com/perfume/Jo-Malone-London/Wood-Sage-Sea-Salt-25529.html |
+| Petitgrain Oakmoss | Parfums de Marly — Greenley | fragrantica.com/perfume/Parfums-de-Marly/Greenley-62101.html |
+| Saffron Rose | Mancera — Instant Crush | fragrantica.com/perfume/Mancera/Instant-Crush-54885.html |
+| Grapefruit Incense | Chanel — Bleu de Chanel (EDT 2010) | fragrantica.com/perfume/Chanel/Bleu-de-Chanel-9099.html |
+| Magnolia Clove | Moschino — Toy Boy | fragrantica.com/perfume/Moschino/Toy-Boy-55858.html |
+| Passionfruit Heliotrope | Tiziana Terenzi — Kirke | fragrantica.com/perfume/Tiziana-Terenzi/Kirke-32172.html |
+| Violet Patchouli | Yves Saint Laurent — Tuxedo | fragrantica.com/perfume/Yves-Saint-Laurent/Tuxedo-32269.html |
+| Sweet Oud | Lattafa Perfumes — Ameer Al Oudh Intense Oud | fragrantica.com/perfume/Lattafa-Perfumes/Ameer-Al-Oudh-Intense-Oud-64947.html |
+| Almond Lotus | Parfums de Marly — Valaya Exclusif | fragrantica.com/perfume/Parfums-de-Marly/Valaya-Exclusif-102806.html |
+| Strawberry Peony | Yves Saint Laurent — Mon Paris | fragrantica.com/perfume/Yves-Saint-Laurent/Mon-Paris-38914.html |
+| Honey Gardenia | Jean Paul Gaultier — Scandal (women) | fragrantica.com/perfume/Jean-Paul-Gaultier/Scandal-45651.html |
+| Mirabelle Freesia | Chloé — Nomade | fragrantica.com/perfume/Chloe/Nomade-48434.html |
+| Salty Vanilla | Rabanne — Olympea (original 2015) | fragrantica.com/perfume/Rabanne/Olympea-31666.html |
+| Raspberry Leather | Tom Ford — Tuscan Leather | fragrantica.com/perfume/Tom-Ford/Tuscan-Leather-1849.html |
+| Sparkling Lychee | Kayali Fragrances — Eden Sparkling Lychee \| 39 | fragrantica.com/perfume/Kayali-Fragrances/Eden-Sparkling-Lychee-39-Eau-de-Parfum-88197.html |
+| Violet Tobacco | Tom Ford — Ombré Leather Parfum | fragrantica.com/perfume/Tom-Ford/Ombre-Leather-Parfum-68716.html |
+| Bluebell Persimmon | Jo Malone London — Wild Bluebell (original 2011) | fragrantica.com/perfume/Jo-Malone-London/Wild-Bluebell-12310.html |
+| Saffron Vetiver | Byredo — Black Saffron | fragrantica.com/perfume/Byredo/Black-Saffron-16220.html |
+| Passion Vanilla | Lancôme — Hypnose | fragrantica.com/perfume/Lancome/Hypnose-170.html |
 
 Kalau tambah racikan baru lewat alur di atas, **selalu update tabel ini**
 juga — jangan cuma isi `fragranticaUrl` di `products.ts`.
