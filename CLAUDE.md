@@ -3,7 +3,7 @@
 # claude.md — Arung Perfumery (brand: Arung Wangi)
 
 > Konteks proyek untuk dilanjutkan sesi berikutnya.
-> Diperbarui: 2026-07-03 (sesi #4 — filter waktu/aroma, scent matcher, SEO OG+JSON-LD)
+> Diperbarui: 2026-07-03 (sesi #5 — 34 racikan baru, total 43, dropdown filter)
 
 ---
 
@@ -177,6 +177,32 @@ Tujuan: pelanggan lihat katalog racikan → tertarik secara visual → klik
   `layout.tsx` (`https://arung-parfumary.pages.dev`) — tanpa itu URL
   `og:image` resolve ke `localhost:3000` di production (sempat kejadian,
   sudah diperbaiki)
+- **Filter Katalog diubah dari pill button jadi 3 dropdown compact**
+  (Gender/Waktu/Aroma dalam satu baris) — 3 baris tombol kerasa terlalu
+  ramai untuk katalog kecil, `FilterSelect` (native `<select>`)
+  menggantikan `FilterRow` lama di `KatalogGrid.tsx`
+
+---
+
+## ✅ Progress Sesi #5 (2026-07-03)
+
+- **34 racikan baru ditambahkan sekaligus (total jadi 43)** — riset lewat
+  WebSearch (Fragrantica langsung 403, jadi WebSearch summary jadi sumber
+  utama sejak sesi ini), semua sudah dicek tidak duplikat dengan racikan
+  lama. Lihat tabel referensi lengkap di bawah untuk daftar & link
+  Fragrantica masing-masing
+- **Skala katalog berubah signifikan**: dari 9 racikan (semua niche/indie
+  brand seperti Mykonos, SAFF & Co.) jadi mencakup banyak fragrance
+  mainstream/ikonik (Aventus, Baccarat Rouge 540, Black Opium, Sauvage
+  sudah ada sebelumnya, dll). Kalau ke depan mau menjaga positioning
+  "artisan niche-inspired" murni, pertimbangkan pisah kategori/koleksi di
+  katalog — belum dilakukan di sesi ini
+- Racikan baru ini mengisi celah yang sempat ketahuan waktu tes scent
+  matcher sesi #4: dulu kata kunci "leather" tidak match apapun, sekarang
+  `Oud Mint` (ref: Mancera Aoud Lemon Mint) dan `Smoked Cherry` (ref: Tom
+  Ford Cherry Smoke) punya note Leather asli — matcher jadi lebih kaya
+  otomatis begitu data produk bertambah, tidak perlu ubah kode
+  `scentMatcher.ts`
 
 ---
 
@@ -256,6 +282,40 @@ produk resmi brand manapun (lihat disclaimer di footer).
 | Lavender Marine | Mykonos — California Blue | fragrantica.com/perfume/Mykonos/California-Blue-120464.html |
 | Cardamom Amber | Rabanne — Black XS (2005, original) | fragrantica.com/perfume/Rabanne/Black-XS-514.html |
 | Bergamot Ambroxan | Dior — Sauvage (2015 EDT, original) | fragrantica.com/perfume/Dior/Sauvage-31861.html |
+| Cinnamon Oud | Lattafa Perfumes — Khamrah | fragrantica.com/perfume/Lattafa-Perfumes/Khamrah-75805.html |
+| Ginger Ambroxan | Louis Vuitton — Imagination | fragrantica.com/perfume/Louis-Vuitton/Imagination-67370.html |
+| Pineapple Birch | Creed — Aventus | fragrantica.com/perfume/Creed/Aventus-9828.html |
+| Mint Tonka | Versace — Eros (EDT original) | fragrantica.com/perfume/Versace/Eros-16657.html |
+| Plum Driftwood | Rasasi — Hawas Ice | fragrantica.com/perfume/Rasasi/Hawas-Ice-89050.html |
+| Saffron Ambergris | Maison Francis Kurkdjian — Baccarat Rouge 540 | fragrantica.com/perfume/Maison-Francis-Kurkdjian/Baccarat-Rouge-540-33519.html |
+| Midnight Coffee | Yves Saint Laurent — Black Opium | fragrantica.com/perfume/Yves-Saint-Laurent/Black-Opium-25324.html |
+| Pear Musk | Ex Nihilo — Blue Talisman | fragrantica.com/perfume/Ex-Nihilo/Blue-Talisman-84224.html |
+| Cherry Almond | Tom Ford — Lost Cherry | fragrantica.com/perfume/Tom-Ford/Lost-Cherry-51411.html |
+| Green Apple Lotus | Nautica — Nautica Voyage | fragrantica.com/perfume/Nautica/Nautica-Voyage-913.html |
+| Pineapple Patchouli | Nishane — Hacivat | fragrantica.com/perfume/Nishane/Hacivat-44174.html |
+| Lychee Rose | Parfums de Marly — Delina | fragrantica.com/perfume/Parfums-de-Marly/Delina-43871.html |
+| Apple Caramel | Afnan — 9 PM Rebel | fragrantica.com/perfume/Afnan/9-PM-Rebel-99238.html |
+| Golden Ylang | Dior — J'adore | fragrantica.com/perfume/Dior/J-adore-210.html |
+| Velvet Rose | Parfums de Marly — Delina Exclusif | fragrantica.com/perfume/Parfums-de-Marly/Delina-Exclusif-50370.html |
+| Pistachio Gelato | Kayali Fragrances — Yum Pistachio Gelato \| 33 | fragrantica.com/perfume/Kayali-Fragrances/Yum-Pistachio-Gelato-33-79846.html |
+| Pear Freesia | Jo Malone London — English Pear & Freesia | fragrantica.com/perfume/Jo-Malone-London/English-Pear-Freesia-10314.html |
+| Hazelnut Amberwood | Rabanne — 1 Million Lucky | fragrantica.com/perfume/Rabanne/1-Million-Lucky-48903.html |
+| Rose Espresso | Montale — Intense Cafe | fragrantica.com/perfume/Montale/Intense-Cafe-18021.html |
+| Jasmine Sambac | Gucci — Gucci Bloom (2017 original) | fragrantica.com/perfume/Gucci/Gucci-Bloom-44894.html |
+| Green Pepper Musk | Carolina Herrera — 212 Men | fragrantica.com/perfume/Carolina-Herrera/212-Men-297.html |
+| Almond Heliotrope | Parfums de Marly — Pegasus | fragrantica.com/perfume/Parfums-de-Marly/Pegasus-16938.html |
+| Sweet Pea Peony | Dior — Miss Dior Blooming Bouquet | fragrantica.com/perfume/Dior/Miss-Dior-Blooming-Bouquet-23280.html |
+| Tuberose Agave | Memo Paris — Marfa | fragrantica.com/perfume/Memo-Paris/Marfa-37185.html |
+| Oud Mint | Mancera — Aoud Lemon Mint | fragrantica.com/perfume/Mancera/Aoud-Lemon-Mint-39181.html |
+| Sage Amberwood | Yves Saint Laurent — Y Eau de Parfum | fragrantica.com/perfume/Yves-Saint-Laurent/Y-Eau-de-Parfum-50757.html |
+| Raspberry Rose | Louis Vuitton — Les Sables Roses | fragrantica.com/perfume/Louis-Vuitton/Les-Sables-Roses-55040.html |
+| Smoked Cherry | Tom Ford — Cherry Smoke | fragrantica.com/perfume/Tom-Ford/Cherry-Smoke-78578.html |
+| Grapefruit Jasmine | Cacharel — Amor Amor | fragrantica.com/perfume/Cacharel/Amor-Amor-238.html |
+| Gardenia Coffee | Parfums de Marly — Layton Exclusif | fragrantica.com/perfume/Parfums-de-Marly/Layton-Exclusif-46633.html |
+| Passionfruit Peony | Victoria's Secret — Bombshell | fragrantica.com/perfume/Victoria-s-Secret/Bombshell-10190.html |
+| Blackcurrant Rose | Giorgio Armani — Sì Passione | fragrantica.com/perfume/Giorgio-Armani/Si-Passione-48002.html |
+| Litsea Mint | Versace — Eros Parfum (2021) | fragrantica.com/perfume/Versace/Eros-Parfum-70090.html |
+| Melon Cappuccino | Antonio Banderas — Blue Seduction (men) | fragrantica.com/perfume/Antonio-Banderas/Blue-Seduction-1088.html |
 
 Kalau tambah racikan baru lewat alur di atas, **selalu update tabel ini**
 juga — jangan cuma isi `fragranticaUrl` di `products.ts`.
