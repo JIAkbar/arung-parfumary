@@ -10,37 +10,32 @@ import type { Gender, Product, WaktuPakai } from "@/lib/products";
 const GENDER_FILTERS = ["Semua", "Pria", "Wanita", "Unisex"];
 const WAKTU_FILTERS = ["Semua", "Pagi", "Siang", "Sore", "Malam"];
 
-function FilterRow({
+function FilterSelect({
   label,
   options,
-  active,
+  value,
   onChange,
 }: {
   label: string;
   options: string[];
-  active: string;
+  value: string;
   onChange: (value: string) => void;
 }) {
   return (
-    <div className="flex flex-wrap items-center justify-center gap-2">
-      <span className="mr-1 text-[10px] uppercase tracking-wider text-ink-muted">
-        {label}:
-      </span>
-      {options.map((item) => (
-        <button
-          key={item}
-          type="button"
-          onClick={() => onChange(item)}
-          className={`rounded-full border px-3 py-1 text-xs uppercase tracking-wider transition-colors ${
-            active === item
-              ? "border-gold bg-gold text-white"
-              : "border-border text-ink-muted hover:border-gold hover:text-gold"
-          }`}
-        >
-          {item}
-        </button>
-      ))}
-    </div>
+    <label className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-ink-muted">
+      {label}
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="rounded-full border border-border bg-surface px-3 py-1.5 text-xs uppercase tracking-wider text-foreground transition-colors hover:border-gold focus:border-gold focus:outline-none"
+      >
+        {options.map((item) => (
+          <option key={item} value={item}>
+            {item}
+          </option>
+        ))}
+      </select>
+    </label>
   );
 }
 
@@ -86,23 +81,23 @@ export default function KatalogGrid({ products }: { products: Product[] }) {
         />
       </div>
 
-      <div className="mb-10 flex flex-col gap-3">
-        <FilterRow
+      <div className="mb-10 flex flex-wrap items-center justify-center gap-4">
+        <FilterSelect
           label="Gender"
           options={GENDER_FILTERS}
-          active={gender}
+          value={gender}
           onChange={setGender}
         />
-        <FilterRow
+        <FilterSelect
           label="Waktu"
           options={WAKTU_FILTERS}
-          active={waktu}
+          value={waktu}
           onChange={setWaktu}
         />
-        <FilterRow
+        <FilterSelect
           label="Aroma"
           options={familyOptions}
-          active={family}
+          value={family}
           onChange={setFamily}
         />
       </div>
