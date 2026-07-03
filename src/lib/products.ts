@@ -28,7 +28,7 @@ export interface Product {
   bottleColor: string;
 }
 
-export const WHATSAPP_NUMBER = "6289900447098";
+export const WHATSAPP_NUMBER = "628990447098";
 
 // Harga mulai seragam untuk semua racikan
 export const HARGA_MULAI_DEFAULT = 20000;

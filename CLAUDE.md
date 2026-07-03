@@ -136,6 +136,14 @@ Tujuan: pelanggan lihat katalog racikan → tertarik secara visual → klik
   (jarang — cuma `Bergamot Ambroxan` yang dapat 3 slot sejauh ini). Kedua
   field ini tampil sebagai badge/tag di `ProductCard.tsx` dan
   `produk/[slug]/page.tsx`
+- **Filter gender di Katalog** — komponen baru `KatalogGrid.tsx` (client
+  component), tombol Semua/Pria/Wanita/Unisex di atas grid produk, filter
+  murni client-side (tidak query ulang, cuma `.filter()` array yang sudah
+  ada). `katalog/page.tsx` sekarang cuma passing `products` ke komponen ini
+- **Koreksi `WHATSAPP_NUMBER`**: nomor yang tercatat sesi #2
+  (`6289900447098` / 0899-0044-7098) ternyata salah ketik satu digit —
+  nomor benar adalah **`628990447098`** (0899-044-7098), sudah dikonfirmasi
+  user & diperbaiki di `src/lib/products.ts`
 
 ---
 
@@ -150,13 +158,14 @@ Arung Perfumery/
 │   │   ├── layout.tsx            ← font, metadata, Header+Footer wrapper
 │   │   ├── page.tsx               ← Beranda (Hero + Racikan Unggulan)
 │   │   ├── globals.css            ← design tokens (Tailwind v4 @theme)
-│   │   ├── katalog/page.tsx       ← grid semua produk
+│   │   ├── katalog/page.tsx       ← render KatalogGrid (filter gender)
 │   │   ├── produk/[slug]/page.tsx ← detail produk + piramida + accords
 │   │   └── tentang/page.tsx        ← Tentang + Kontak digabung (sesi #3)
 │   ├── components/
 │   │   ├── Header.tsx / Footer.tsx ← NAV cuma Katalog + Tentang (sesi #3)
 │   │   ├── Hero.tsx                ← client component, animasi entrance
 │   │   ├── ProductCard.tsx
+│   │   ├── KatalogGrid.tsx         ← client component, filter gender (sesi #3)
 │   │   ├── PyramidNotes.tsx / MainAccords.tsx ← accord bar berwarna per family (sesi #3)
 │   │   ├── BottleIllustration.tsx  ← SVG original, client component (useId)
 │   │   ├── BrandMark.tsx           ← logo swirl mark SVG (sesi #2)
@@ -248,8 +257,10 @@ juga — jangan cuma isi `fragranticaUrl` di `products.ts`.
   `npm run dev`)
 - Nama brand di UI = **"Arung Wangi"** (bukan "Arung Perfumery" — itu cuma
   nama folder/repo)
-- `WHATSAPP_NUMBER` sudah nomor asli (`6289900447098`) — kalau ganti,
-  edit di `src/lib/products.ts`, dua fungsi order URL ikut otomatis
+- `WHATSAPP_NUMBER` sudah nomor asli (`628990447098`, lokal 0899-044-7098)
+  — kalau ganti, edit di `src/lib/products.ts`, dua fungsi order URL ikut
+  otomatis. **Selalu konfirmasi ulang ke user kalau dapat nomor baru**
+  sebelum ganti — pernah kejadian salah ketik satu digit di sesi #2
 - Remote GitHub: `https://github.com/JIAkbar/arung-parfumary`, branch
   `main`. Push langsung ke `main` (bukan lewat PR) — itu keputusan user
   di sesi #2, bukan default
