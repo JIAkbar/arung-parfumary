@@ -3,7 +3,7 @@
 # claude.md — Arung Perfumery (brand: Arung Wangi)
 
 > Konteks proyek untuk dilanjutkan sesi berikutnya.
-> Diperbarui: 2026-07-03 (sesi #8 — Racikan Serupa + sitemap.xml/robots.txt)
+> Diperbarui: 2026-07-03 (sesi #9 — gerbang pilih ukuran sebelum WhatsApp + hapus WA Footer)
 
 ---
 
@@ -396,6 +396,71 @@ permintaan user.
   Verifikasi: build sukses generate `/robots.txt` + `/sitemap.xml`
   (146 halaman total), isi keduanya dicek manual (`out/robots.txt`,
   `out/sitemap.xml` — 72 `<url>` cocok dengan jumlah racikan+halaman statis)
+
+---
+
+## ✅ Progress Sesi #9 (2026-07-03) — Gerbang Pilih Ukuran Sebelum WhatsApp
+
+- **Masalah**: tombol "Pesan via WhatsApp" di halaman detail produk bisa
+  diklik sebelum user pilih ukuran botol — pesan WA yang terkirim jadi
+  pakai placeholder kosong (tidak ada ukuran/konsentrasi/harga terisi),
+  padahal begitu ukuran dipilih pesannya jauh lebih lengkap (lihat
+  `whatsappOrderUrl` dari sesi #6). User tidak mau tombol itu tetap
+  langsung buka WhatsApp kalau belum ada ukuran dipilih
+- **`VarianWarningModal`** (komponen baru, di dalam
+  `HargaKalkulator.tsx`, tidak perlu file terpisah) — modal peringatan
+  singkat, judul "Pilih ukuran dulu ya" + kalimat penjelas + satu tombol
+  "Oke, saya pilih dulu". Styling ikut token situs yang sudah ada
+  (`border-gold-hairline`, `bg-gold`, `rounded-2xl`, dst — bukan komponen
+  modal generic baru)
+- **Kondisi trigger**: `volume === null` (state `dipilih` yang sudah ada
+  di `HargaKalkulator.tsx` sejak sesi #6). Selama user belum klik ukuran
+  manapun, tombol "Pesan via WhatsApp" di cabang `!dipilih` sekarang jadi
+  `<button type="button" onClick={() => setShowVarianWarning(true)}>` —
+  **bukan lagi `<a href="wa.me/...">`** — supaya tidak ada navigasi/tab
+  baru sama sekali sebelum modal ditutup dan ukuran dipilih. Begitu
+  `volume !== null` (cabang `dipilih`), tombol tetap `<a>` asli seperti
+  sebelumnya, tidak ada perubahan perilaku di jalur itu
+- **Cara tutup modal** (tiga jalur, semua memanggil `onClose` yang sama →
+  `setShowVarianWarning(false)`):
+  1. Klik tombol "Oke, saya pilih dulu" di dalam modal
+  2. Klik backdrop (`onClick={onClose}` di `<div className="fixed inset-0
+     ...">` pembungkus) — kartu modal sendiri punya
+     `onClick={(e) => e.stopPropagation()}` supaya klik di dalam kartu
+     tidak ikut menutup
+  3. Tombol `Escape` — `useEffect` di dalam `VarianWarningModal` daftarkan
+     `keydown` listener ke `document` selama modal mount, cleanup saat
+     unmount
+- **Styling tombol tidak berubah** — user tidak bisa membedakan dari
+  tampilan kalau itu sekarang `<button>` bukan `<a>` (class sama persis:
+  `rounded-full bg-gold px-8 py-3 text-sm font-medium text-white
+  transition-colors hover:bg-gold-light`), yang berubah cuma elemen &
+  handler-nya
+- **Footer: link WhatsApp dihapus total** dari `Footer.tsx` — sebelumnya
+  ada tombol/link WA di footer (selain di halaman detail produk & halaman
+  Tentang). Footer sekarang cuma `BrandMark` + nama brand + copyright,
+  tidak ada CTA apapun lagi
+- **`/tentang` TIDAK disentuh** — link WhatsApp di halaman Tentang (section
+  "Ada Pertanyaan?" dari sesi #3) tetap `<a href="https://wa.me/...">`
+  langsung seperti sebelumnya, tidak lewat gerbang modal apapun. Ini
+  sengaja: modal gate cuma untuk kasus di mana ada state ukuran yang
+  "belum lengkap" (halaman produk), sedangkan link WA di Tentang selalu
+  generik (`whatsappGeneralUrl()`, tidak bergantung ukuran/produk apapun)
+- Verifikasi browser (dev server lokal, port 3000): modal muncul dengan
+  teks & tombol yang benar saat klik "Pesan via WhatsApp" sebelum pilih
+  ukuran, tidak ada tab/window baru terbuka; modal tertutup lewat ketiga
+  jalur (tombol, klik backdrop, `Escape`); setelah pilih ukuran (mis. 30
+  ml), tombol jadi `<a>` asli dengan `href` `wa.me/...` terisi lengkap
+  (`Ukuran: 30 ml`, `Konsentrasi: EDP`, `Estimasi harga: Rp20.000 –
+  Rp22.000`); Footer beranda dicek tidak ada teks "WhatsApp"; `/tentang`
+  dicek link WA masih `<a>` (bukan `<button>`) dengan href `wa.me/...`
+  langsung. Tidak ada error di console selama pengujian
+- Build: `next build --webpack` sukses, tetap 146 halaman statis (task
+  ini murni ubah komponen client, tidak menambah/mengurangi route)
+- Deploy: `wrangler pages deploy out --project-name=arung-parfumary
+  --branch=main`, live di `arung-parfumary.pages.dev` — verifikasi juga
+  dilakukan lewat URL deploy unik (bukan alias domain, yang pernah
+  menunjukkan perilaku stale-cache di sesi sebelumnya)
 
 ---
 
