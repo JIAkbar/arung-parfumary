@@ -1,8 +1,10 @@
 import Link from "next/link";
 import BottleIllustration from "./BottleIllustration";
+import { hargaTermurah, formatRupiah } from "@/lib/hargaKalkulator";
 import type { Product } from "@/lib/products";
 
 export default function ProductCard({ product }: { product: Product }) {
+  const { low } = hargaTermurah(product);
   return (
     <Link
       href={`/produk/${product.slug}`}
@@ -28,7 +30,7 @@ export default function ProductCard({ product }: { product: Product }) {
           {product.ringkasan}
         </p>
         <p className="mt-auto pt-3 text-sm font-medium text-foreground">
-          Mulai Rp{product.hargaMulai.toLocaleString("id-ID")}
+          Mulai {formatRupiah(low)}
         </p>
       </div>
     </Link>

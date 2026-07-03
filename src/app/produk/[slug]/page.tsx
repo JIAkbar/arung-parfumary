@@ -1,12 +1,9 @@
-import {
-  VOLUME_REQUEST,
-  getProductBySlug,
-  products,
-  whatsappOrderUrl,
-} from "@/lib/products";
+import { getProductBySlug, products } from "@/lib/products";
+import { hargaTermurah } from "@/lib/hargaKalkulator";
 import BottleIllustration from "@/components/BottleIllustration";
 import PyramidNotes from "@/components/PyramidNotes";
 import MainAccords from "@/components/MainAccords";
+import HargaKalkulator from "@/components/HargaKalkulator";
 import Reveal from "@/components/Reveal";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -42,6 +39,7 @@ export default async function ProdukDetailPage({
   const product = getProductBySlug(slug);
   if (!product) notFound();
 
+  const { low: hargaMulai } = hargaTermurah(product);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -51,7 +49,7 @@ export default async function ProdukDetailPage({
     offers: {
       "@type": "Offer",
       priceCurrency: "IDR",
-      price: product.hargaMulai,
+      price: hargaMulai,
       availability: "https://schema.org/InStock",
     },
   };
@@ -94,32 +92,9 @@ export default async function ProdukDetailPage({
             {product.deskripsi}
           </p>
 
-          <div className="mt-6 flex flex-wrap gap-2">
-            {product.volumeTersedia.map((vol) => (
-              <span
-                key={vol}
-                className="rounded-full border border-border px-3 py-1 text-xs text-foreground"
-              >
-                {vol} ml
-              </span>
-            ))}
+          <div className="mt-6">
+            <HargaKalkulator product={product} />
           </div>
-          <p className="mt-2 text-xs text-ink-muted">
-            Butuh {VOLUME_REQUEST} ml? Bisa request, tinggal sebut di pesan WhatsApp.
-          </p>
-
-          <p className="mt-6 font-serif text-2xl text-foreground">
-            Mulai Rp{product.hargaMulai.toLocaleString("id-ID")}
-          </p>
-
-          <a
-            href={whatsappOrderUrl(product.nama)}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-6 inline-block rounded-full bg-gold px-8 py-3 text-sm font-medium text-white transition-colors hover:bg-gold-light"
-          >
-            Pesan via WhatsApp
-          </a>
 
           {product.fragranticaUrl && (
             <p className="mt-4 text-xs text-ink-muted">

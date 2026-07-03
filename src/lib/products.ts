@@ -18,7 +18,6 @@ export interface Product {
   grade: "Premium" | "Medium";
   gender: Gender;
   waktuPakai: WaktuPakai[];
-  hargaMulai: number;
   volumeTersedia: number[];
   ringkasan: string;
   deskripsi: string;
@@ -30,26 +29,45 @@ export interface Product {
 
 export const WHATSAPP_NUMBER = "628990447098";
 
-// Harga mulai seragam untuk semua racikan
-export const HARGA_MULAI_DEFAULT = 20000;
-
 // Ukuran botol seragam untuk semua racikan. 100ml tidak dijual reguler,
 // tapi bisa direquest lewat WhatsApp (lihat VOLUME_REQUEST di halaman produk).
 export const VOLUME_TERSEDIA_DEFAULT = [15, 20, 30, 50];
 export const VOLUME_REQUEST = 100;
 
-export function whatsappOrderUrl(namaProduk: string) {
-  const pesan = [
-    `Halo Arung Wangi, saya mau pesan racikan *${namaProduk}*.`,
-    "",
-    "Format pesanan saya:",
-    "Nama:",
-    "Ukuran (ml):",
-    "Jumlah:",
-    "Alamat:",
-    "",
-    "Mohon info total harga & cara pembayarannya. Terima kasih!",
-  ].join("\n");
+export interface OrderDetail {
+  volumeMl: number;
+  konsentrasi: string;
+  hargaText: string;
+}
+
+export function whatsappOrderUrl(namaProduk: string, detail?: OrderDetail) {
+  const pesan = detail
+    ? [
+        `Halo Arung Wangi, saya mau pesan racikan *${namaProduk}*.`,
+        "",
+        `Konsentrasi: ${detail.konsentrasi}`,
+        `Ukuran: ${detail.volumeMl} ml`,
+        `Estimasi harga: ${detail.hargaText}`,
+        "",
+        "Format pesanan saya:",
+        "Nama:",
+        "Jumlah:",
+        "Alamat:",
+        "",
+        "Mohon konfirmasi harga pastinya & cara pembayaran. Terima kasih!",
+      ].join("\n")
+    : [
+        `Halo Arung Wangi, saya mau pesan racikan *${namaProduk}*.`,
+        "",
+        "Format pesanan saya:",
+        "Nama:",
+        "Ukuran (ml):",
+        "Konsentrasi (Cologne/EDT/EDP/Extrait):",
+        "Jumlah:",
+        "Alamat:",
+        "",
+        "Mohon info total harga & cara pembayarannya. Terima kasih!",
+      ].join("\n");
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(pesan)}`;
 }
 
@@ -76,7 +94,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Unisex",
     waktuPakai: ["Sore", "Malam"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Hijau, earthy, dan sedikit smoky — seperti hutan basah selepas hujan.",
     deskripsi:
@@ -103,7 +120,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Unisex",
     waktuPakai: ["Siang", "Sore"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Citrus cerah bertemu mawar dan buah-buahan — mewah ala French Riviera.",
     deskripsi:
@@ -129,7 +145,6 @@ export const products: Product[] = [
     grade: "Medium",
     gender: "Unisex",
     waktuPakai: ["Pagi", "Siang"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Manis creamy seperti tiramisu, dengan kopi yang muncul samar di baliknya.",
     deskripsi:
@@ -156,7 +171,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Unisex",
     waktuPakai: ["Siang", "Sore"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Floral-woody lembut dengan sentuhan bedak — elegan dan tenang.",
     deskripsi:
@@ -182,7 +196,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Unisex",
     waktuPakai: ["Pagi", "Siang"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Citrus cerah bertemu teh hitam dan jahe — segar dan membangunkan.",
     deskripsi:
@@ -208,7 +221,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Unisex",
     waktuPakai: ["Siang", "Sore"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Fruity-floral manis — grapefruit dan aprikot bertemu mawar dan melati.",
     deskripsi:
@@ -234,7 +246,6 @@ export const products: Product[] = [
     grade: "Medium",
     gender: "Unisex",
     waktuPakai: ["Pagi", "Siang"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Aromatic-aquatic segar — lavender, garam laut, dan bunga air.",
     deskripsi:
@@ -260,7 +271,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Pria",
     waktuPakai: ["Sore", "Malam"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Oriental woody gelap — praline dan kayu manis bertemu amber hitam.",
     deskripsi:
@@ -286,7 +296,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Pria",
     waktuPakai: ["Pagi", "Siang", "Sore"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Segar, amber-woody, dan serbaguna — cocok dipakai kapan saja.",
     deskripsi:
@@ -312,7 +321,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Unisex",
     waktuPakai: ["Sore", "Malam"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Oriental spicy gourmand — praline hangat bertemu oud manis dan kemenyan.",
     deskripsi:
@@ -338,7 +346,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Pria",
     waktuPakai: ["Pagi", "Siang"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Citrus aromatic — jeruk sisilia bertemu jahe dan teh hitam.",
     deskripsi:
@@ -363,7 +370,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Pria",
     waktuPakai: ["Pagi", "Siang", "Sore"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Fruity chypre ikonik — nanas segar bertemu birch dan musk hangat.",
     deskripsi:
@@ -388,7 +394,6 @@ export const products: Product[] = [
     grade: "Medium",
     gender: "Pria",
     waktuPakai: ["Pagi", "Siang"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Segar dan manis — mint, apel hijau, bertemu tonka bean hangat.",
     deskripsi:
@@ -413,7 +418,6 @@ export const products: Product[] = [
     grade: "Medium",
     gender: "Pria",
     waktuPakai: ["Pagi", "Siang"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Fresh fruity aquatic — apel dan bergamot bertemu driftwood musky.",
     deskripsi:
@@ -438,7 +442,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Unisex",
     waktuPakai: ["Sore", "Malam"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Amber ikonik — saffron dan jasmine bertemu kayu manis-gula.",
     deskripsi:
@@ -463,7 +466,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Wanita",
     waktuPakai: ["Sore", "Malam"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Gourmand gelap — kopi pekat bertemu vanilla dan rempah manis.",
     deskripsi:
@@ -488,7 +490,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Unisex",
     waktuPakai: ["Pagi", "Siang"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Fruity musky — pir juicy bertemu musk lembut dan cedar.",
     deskripsi:
@@ -513,7 +514,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Unisex",
     waktuPakai: ["Sore", "Malam"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Gourmand fruity — ceri hitam pekat bertemu almond dan mawar.",
     deskripsi:
@@ -538,7 +538,6 @@ export const products: Product[] = [
     grade: "Medium",
     gender: "Pria",
     waktuPakai: ["Pagi", "Siang"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Woody aquatic segar — apel hijau bertemu water lotus dan cedar.",
     deskripsi:
@@ -563,7 +562,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Unisex",
     waktuPakai: ["Pagi", "Siang", "Sore"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Fruity fresh woody — nanas tropis bertemu patchouli dan cedar.",
     deskripsi:
@@ -588,7 +586,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Wanita",
     waktuPakai: ["Siang", "Sore"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Floral rose mewah — litchi juicy bertemu mawar Turki dan karamel.",
     deskripsi:
@@ -613,7 +610,6 @@ export const products: Product[] = [
     grade: "Medium",
     gender: "Unisex",
     waktuPakai: ["Sore", "Malam"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Fruity woody manis — apel bertemu cedarwood dan karamel hangat.",
     deskripsi:
@@ -638,7 +634,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Wanita",
     waktuPakai: ["Siang", "Sore"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Floral ikonik — jasmine dan ylang-ylang bertemu mawar Damaskus.",
     deskripsi:
@@ -662,7 +657,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Wanita",
     waktuPakai: ["Sore", "Malam"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Floral powdery intens — litchi manis bertemu mawar Damaskus dan musk.",
     deskripsi:
@@ -687,7 +681,6 @@ export const products: Product[] = [
     grade: "Medium",
     gender: "Unisex",
     waktuPakai: ["Siang", "Sore"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Gourmand dessert — pistachio dan es krim bertemu whipped cream manis.",
     deskripsi:
@@ -712,7 +705,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Unisex",
     waktuPakai: ["Pagi", "Siang"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Fruity chypre klasik — pir segar bertemu freesia dan mawar.",
     deskripsi:
@@ -736,7 +728,6 @@ export const products: Product[] = [
     grade: "Medium",
     gender: "Pria",
     waktuPakai: ["Sore", "Malam"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Woody gourmand — hazelnut dan madu bertemu amberwood hangat.",
     deskripsi:
@@ -761,7 +752,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Unisex",
     waktuPakai: ["Sore", "Malam"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Oriental vanilla — kopi pekat bertemu mawar dan amber hangat.",
     deskripsi:
@@ -786,7 +776,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Wanita",
     waktuPakai: ["Siang", "Sore"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "White floral murni — jasmine sambac bertemu tuberose dan cendana.",
     deskripsi:
@@ -810,7 +799,6 @@ export const products: Product[] = [
     grade: "Medium",
     gender: "Pria",
     waktuPakai: ["Pagi", "Siang"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Woody floral musk klasik — daun hijau bertemu lada dan musk bersih.",
     deskripsi:
@@ -835,7 +823,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Pria",
     waktuPakai: ["Sore", "Malam"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Oriental fougere hangat — almond pahit bertemu heliotrope bedak.",
     deskripsi:
@@ -860,7 +847,6 @@ export const products: Product[] = [
     grade: "Medium",
     gender: "Wanita",
     waktuPakai: ["Pagi", "Siang"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Floral segar — sweet pea dan bergamot bertemu peony dan mawar.",
     deskripsi:
@@ -884,7 +870,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Unisex",
     waktuPakai: ["Sore", "Malam"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "White floral eksotis — tuberose memikat bertemu agave hijau.",
     deskripsi:
@@ -909,7 +894,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Unisex",
     waktuPakai: ["Sore", "Malam"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Woody aromatic fresh-oriental — oud hangat bertemu mint dan lemon.",
     deskripsi:
@@ -934,7 +918,6 @@ export const products: Product[] = [
     grade: "Medium",
     gender: "Pria",
     waktuPakai: ["Pagi", "Siang", "Sore"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Aromatic fougere maskulin — sage bersih bertemu amberwood dan cedar.",
     deskripsi:
@@ -959,7 +942,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Unisex",
     waktuPakai: ["Sore", "Malam"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Amber floral mewah — raspberry dan saffron bertemu mawar dan oud.",
     deskripsi:
@@ -984,7 +966,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Unisex",
     waktuPakai: ["Sore", "Malam"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Oriental spicy dramatis — ceri asam bertemu leather dan kayu asap.",
     deskripsi:
@@ -1009,7 +990,6 @@ export const products: Product[] = [
     grade: "Medium",
     gender: "Wanita",
     waktuPakai: ["Pagi", "Siang"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Floral fruity ceria — grapefruit segar bertemu melati dan mawar.",
     deskripsi:
@@ -1033,7 +1013,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Unisex",
     waktuPakai: ["Sore", "Malam"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Floral oud mewah — mawar dan gardenia bertemu kopi dan cendana.",
     deskripsi:
@@ -1058,7 +1037,6 @@ export const products: Product[] = [
     grade: "Medium",
     gender: "Wanita",
     waktuPakai: ["Pagi", "Siang"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Floral fruity ceria — passion fruit dan strawberry bertemu peony.",
     deskripsi:
@@ -1082,7 +1060,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Wanita",
     waktuPakai: ["Siang", "Sore"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Floral fruity elegan — blackcurrant dan pir bertemu mawar dan nanas.",
     deskripsi:
@@ -1106,7 +1083,6 @@ export const products: Product[] = [
     grade: "Premium",
     gender: "Pria",
     waktuPakai: ["Sore", "Malam"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Oriental fougere hangat — mint segar bertemu tonka bean dan amber.",
     deskripsi:
@@ -1131,7 +1107,6 @@ export const products: Product[] = [
     grade: "Medium",
     gender: "Pria",
     waktuPakai: ["Pagi", "Siang"],
-    hargaMulai: HARGA_MULAI_DEFAULT,
     volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Aromatic aquatic unik — melon segar bertemu cappuccino di base.",
     deskripsi:

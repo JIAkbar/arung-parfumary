@@ -3,7 +3,7 @@
 # claude.md — Arung Perfumery (brand: Arung Wangi)
 
 > Konteks proyek untuk dilanjutkan sesi berikutnya.
-> Diperbarui: 2026-07-03 (sesi #5 — 34 racikan baru, total 43, dropdown filter)
+> Diperbarui: 2026-07-03 (sesi #6 — kalkulator harga dinamis per konsentrasi)
 
 ---
 
@@ -206,6 +206,57 @@ Tujuan: pelanggan lihat katalog racikan → tertarik secara visual → klik
 
 ---
 
+## ✅ Progress Sesi #6 (2026-07-03) — Kalkulator Harga Dinamis
+
+- **`hargaMulai` (harga flat Rp20.000 di semua racikan) DIHAPUS TOTAL** dari
+  `Product` interface, dari semua 43 entry, dan dari
+  `HARGA_MULAI_DEFAULT`. Diganti sepenuhnya oleh perhitungan dinamis
+  berbasis ukuran botol + konsentrasi + `grade` — lihat
+  `src/lib/hargaKalkulator.ts`
+- **Rumus harga ikut kalkulator racik internal** (project terpisah
+  `Parfumary`, lihat `index.html`-nya di sana): persentase fragrance oil
+  per konsentrasi persis sama dengan `PRESET_PCT` di kalkulator itu —
+  `Premium: {Cologne 8%, EDT 13%, EDP 20%, Extrait 30%}`,
+  `Medium: {Cologne 12%, EDT 19%, EDP 29%, Extrait 44%}` — supaya kalau
+  formula racik di Parfumary berubah, gampang disamakan lagi di sini
+- **Asumsi biaya bahan (WAJIB DIKETAHUI, bukan harga bahan riil per merk)**
+  — dari nilai default kalkulator Parfumary (`harga.html`), bukan harga
+  bahan aktual toko:
+  - Bibit Premium: Rp1.500/ml (Rp150.000/100ml)
+  - Bibit Medium: Rp1.125/ml (Rp112.500/100ml)
+  - Booster: 1% dari volume bibit, Rp10.000/ml
+  - Pelarut: Rp135/ml
+  - Botol polos: Rp7.000/pcs (flat, tidak ikut ukuran)
+  - **Kalau biaya bahan riil beda dari ini, cukup ubah 4 konstanta di
+    `hargaKalkulator.ts`** (`BIBIT_PER_ML`, `BOOSTER_PER_ML`,
+    `PELARUT_PER_ML`, `BOTOL_POLOS`) — tidak perlu ubah komponen manapun,
+    semua turunan (ProductCard, halaman detail, OG image, JSON-LD) ikut
+    otomatis
+- **Rumus pembulatan jadi range harga** (dikonfirmasi cocok dengan contoh
+  user: biaya produksi ±Rp20.874 → range Rp22.000–24.000):
+  1. `step` = 10% dari biaya produksi, dibulatkan ke kelipatan Rp1.000
+     terdekat (minimum Rp1.000)
+  2. `low` = biaya produksi dibulatkan **ke atas** ke kelipatan `step`
+  3. `high` = `low + step`
+  - Fungsi: `hitungRangeHarga(volumeMl, grade, konsentrasi)` di
+    `hargaKalkulator.ts`
+- **`HargaKalkulator.tsx`** (client component baru) — di halaman detail
+  produk: user pilih ukuran (15/20/30/50 ml) → pilih konsentrasi
+  (Cologne/EDT/EDP/Extrait, default EDP) → range harga muncul real-time.
+  Menggantikan blok statis pill-ukuran + "Mulai Rp" + tombol WA yang lama
+- **`whatsappOrderUrl` sekarang punya parameter opsional `OrderDetail`**
+  (`volumeMl`, `konsentrasi`, `hargaText`) — kalau user sudah pilih di
+  kalkulator, pesan WA ter-prefill lengkap dengan konsentrasi & estimasi
+  harga, bukan cuma placeholder kosong
+- **`hargaTermurah(product)`** — dipakai di `ProductCard.tsx` (badge "Mulai
+  Rp...") dan `opengraph-image.tsx` (gambar share), selalu pakai ukuran
+  terkecil yang tersedia + konsentrasi Cologne (termurah)
+- **JSON-LD `Product.offers.price`** di halaman detail sekarang ikut
+  `hargaTermurah`, bukan angka statis — supaya konsisten dengan yang
+  ditampilkan di UI
+
+---
+
 ## 📁 Struktur File
 
 ```
@@ -226,6 +277,7 @@ Arung Perfumery/
 │   │   ├── Hero.tsx                ← client component, animasi entrance
 │   │   ├── ProductCard.tsx
 │   │   ├── KatalogGrid.tsx         ← client component, filter+matcher (sesi #3/#4)
+│   │   ├── HargaKalkulator.tsx     ← client component, pilih ukuran+konsentrasi (sesi #6)
 │   │   ├── PyramidNotes.tsx / MainAccords.tsx ← accord bar berwarna per family (sesi #3)
 │   │   ├── BottleIllustration.tsx  ← SVG original, client component (useId)
 │   │   ├── BrandMark.tsx           ← logo swirl mark SVG (sesi #2)
@@ -233,6 +285,7 @@ Arung Perfumery/
 │   │   └── Reveal.tsx              ← scroll-reveal wrapper (framer-motion)
 │   └── lib/
 │       ├── products.ts             ← DATA PRODUK + WHATSAPP_NUMBER + whatsappOrderUrl/whatsappGeneralUrl
+│       ├── hargaKalkulator.ts      ← rumus harga per ukuran+konsentrasi (sesi #6, KONSTANTA BIAYA DI SINI)
 │       ├── accordFamily.ts         ← family aroma dari mainAccords (sesi #4)
 │       └── scentMatcher.ts         ← keyword matcher untuk scent finder (sesi #4)
 ├── docs/superpowers/specs/         ← spec desain (mis. redesign navbar/logo/tema)
@@ -250,10 +303,11 @@ coba WebSearch dulu buat cari ringkasan notes-nya) → rangkum **main
 accords** + **piramida notes** sebagai referensi fakta (bukan salin
 teks/gambar editorial Fragrantica) → tulis nama & deskripsi racikan
 sendiri (jangan pakai nama brand aslinya) → tambah entry baru di
-`src/lib/products.ts` dengan `hargaMulai: HARGA_MULAI_DEFAULT` dan
-`volumeTersedia: VOLUME_TERSEDIA_DEFAULT` (jangan bikin array ukuran
-custom lagi — semua racikan wajib ukuran yang sama: 15/20/30/50 ml,
-100 ml via request).
+`src/lib/products.ts` dengan `volumeTersedia: VOLUME_TERSEDIA_DEFAULT`
+(jangan bikin array ukuran custom lagi — semua racikan wajib ukuran yang
+sama: 15/20/30/50 ml, 100 ml via request). **Tidak perlu isi field harga
+apapun** — sejak sesi #6, harga dihitung otomatis dari `grade` +
+ukuran + konsentrasi lewat `hargaKalkulator.ts` (lihat Progress Sesi #6).
 
 **Wajib selalu isi `fragranticaUrl`** dengan link Fragrantica asli — kalau
 tidak ada referensi spesifik yang bisa dicatat, jangan tambahkan racikan
@@ -368,3 +422,18 @@ juga — jangan cuma isi `fragranticaUrl` di `products.ts`.
   `next.config.ts` sebelum build — dan alur deploy Cloudflare-nya perlu
   diganti ke adapter Workers (`@opennextjs/cloudflare`), bukan lagi
   `wrangler pages deploy out` langsung
+- **BELUM DIINVESTIGASI**: user pernah screenshot console browser di situs
+  live nunjukkin banyak error 404 buat file `_next/...` (chunk/prefetch)
+  di beberapa halaman produk & `/katalog`, `/tentang`. Dugaan awal: Next.js
+  App Router prefetch `<Link>` bawaan nyoba fetch RSC payload yang
+  strukturnya beda di static export vs server biasa. Situsnya kelihatannya
+  tetap jalan normal (prefetch gagal biasanya fallback ke full navigation
+  saat diklik beneran), tapi belum dicek detail lewat Network tab —
+  next session sebaiknya cek ini kalau user laporan lagi atau sebelum
+  situs dianggap "selesai"
+- **Git push di sesi ini beberapa kali macet** butuh re-auth GitHub
+  interaktif (`git-credential-manager` minta popup sign-in browser,
+  `GIT_TERMINAL_PROMPT=0` doang tidak selalu cukup) — kalau macet lagi,
+  minta user cek popup di layar mereka, retry setelah itu biasanya
+  langsung jalan. `GIT_TERMINAL_PROMPT=0` tetap dipakai supaya command
+  gagal cepat/jelas daripada hang tanpa output kalau kredensial expired
