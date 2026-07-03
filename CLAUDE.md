@@ -3,7 +3,7 @@
 # claude.md — Arung Perfumery (brand: Arung Wangi)
 
 > Konteks proyek untuk dilanjutkan sesi berikutnya.
-> Diperbarui: 2026-07-03 (sesi #6 — kalkulator harga dinamis per konsentrasi)
+> Diperbarui: 2026-07-03 (sesi #6 — kalkulator harga, dropdown custom, aroma raw)
 
 ---
 
@@ -255,6 +255,25 @@ Tujuan: pelanggan lihat katalog racikan → tertarik secara visual → klik
   (gambar share), JSON-LD `Product.offers.price`, dan tampilan awal
   `HargaKalkulator.tsx` sebelum ukuran dipilih. Kalau mau ganti angka
   teaser-nya, cukup ubah konstanta ini di satu tempat
+- **Filter Katalog: dropdown `<select>` native diganti custom** —
+  `<select>` browser nggak bisa di-styling sama sekali saat panelnya
+  dibuka (selalu tampil kotak putih polos OS, beda banget sama tema
+  emas-krem). `FilterDropdown` baru di `KatalogGrid.tsx` gambar sendiri
+  tombol + panelnya (radius, warna, hover gold, dot aktif), pakai
+  `role="listbox"`/`"option"`, tutup otomatis saat klik di luar atau
+  `Escape`. Tiga opsi sempat divisualisasikan dulu (dropdown custom vs
+  chip-scroll vs bottom-sheet) — user pilih dropdown custom
+- **Filter Aroma sekarang pakai nama accord mentah, bukan kategori
+  bucket** — sebelumnya `primaryFamily()` di `accordFamily.ts`
+  mengelompokkan accord (mis. Vanilla/Coffee/Caramel/Milky semua jadi
+  "Sweet") supaya daftar filter pendek. User minta disamakan dengan
+  Fragrantica yang "sudah cukup lengkap" — sekarang filter Aroma langsung
+  pakai `product.mainAccords[0].nama` apa adanya (accord dominan tiap
+  racikan, tanpa dikelompokkan ulang), supaya label filter = label yang
+  tampil di grafik Main Accords halaman produk, tidak ada mismatch.
+  **`primaryFamily()` sudah dihapus** dari `accordFamily.ts` (sudah tidak
+  dipakai) — fungsi `accordFamily()` (buat warna grafik & scent matcher)
+  tetap ada, tidak berubah
 - **`whatsappOrderUrl` sekarang punya parameter opsional `OrderDetail`**
   (`volumeMl`, `konsentrasi`, `hargaText`) — kalau user sudah pilih ukuran
   di kalkulator, pesan WA ter-prefill lengkap dengan konsentrasi &

@@ -1,5 +1,3 @@
-import type { Accord } from "@/lib/products";
-
 const FAMILY_KEYWORDS: { key: string; keywords: string[] }[] = [
   { key: "Woody", keywords: ["woody"] },
   { key: "Earthy", keywords: ["earthy"] },
@@ -34,9 +32,4 @@ export function accordFamily(nama: string): string {
   const key = nama.toLowerCase();
   const match = FAMILY_KEYWORDS.find((f) => f.keywords.some((k) => key.includes(k)));
   return match ? match.key : nama;
-}
-
-export function primaryFamily(mainAccords: Accord[]): string {
-  if (mainAccords.length === 0) return "Lainnya";
-  return accordFamily(mainAccords[0].nama);
 }
