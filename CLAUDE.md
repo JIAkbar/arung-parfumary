@@ -3,7 +3,7 @@
 # claude.md — Arung Perfumery (brand: Arung Wangi)
 
 > Konteks proyek untuk dilanjutkan sesi berikutnya.
-> Diperbarui: 2026-07-03 (sesi #3 — katalog racikan riil, ukuran seragam, merge Tentang+Kontak)
+> Diperbarui: 2026-07-03 (sesi #4 — filter waktu/aroma, scent matcher, SEO OG+JSON-LD)
 
 ---
 
@@ -147,6 +147,39 @@ Tujuan: pelanggan lihat katalog racikan → tertarik secara visual → klik
 
 ---
 
+## ✅ Progress Sesi #4 (2026-07-03)
+
+- **Filter Waktu Pakai & Family Aroma di Katalog** — `KatalogGrid.tsx`
+  sekarang punya 3 baris filter (Gender/Waktu/Aroma), semua AND satu sama
+  lain. "Family Aroma" dihitung otomatis dari accord dominan tiap racikan
+  (`primaryFamily()` di `src/lib/accordFamily.ts` — ambil accord dengan
+  `persen` tertinggi, mainAccords **wajib diurutkan descending** biar ini
+  akurat), bukan field manual baru — daftar tombolnya juga auto-generate
+  dari union family yang benar-benar ada di data (bukan hardcoded)
+- **Scent matcher berbasis kata kunci** (`src/lib/scentMatcher.ts`) — kotak
+  teks bebas "Ceritakan racikan yang kamu mau" di atas filter. **Bukan AI
+  beneran** (tidak ada LLM call, situs tetap statis) — cuma cocokkan token
+  dari input ke (a) kamus sinonim → family aroma (`SYNONYMS` dict, mis.
+  "spicy"/"rempah"/"pedas" → "Rempah") dengan skor = persen accord, dan
+  (b) substring literal ke `notes.top/middle/base`. Kalau skor 0 untuk
+  semua racikan (mis. user sebut note yang belum ada, seperti "leather"),
+  tampil pesan jujur "belum ada yang cocok" — **jangan dipaksa nampilin
+  hasil asal ada**. Kalau nanti mau upgrade ke AI beneran, butuh Cloudflare
+  Pages Functions + Workers AI binding (akun sudah punya akses), bukan
+  sekadar edit komponen
+- **SEO: OG image dinamis + JSON-LD per racikan** —
+  `produk/[slug]/opengraph-image.tsx` generate PNG 1200×630 saat build
+  (pakai `next/og` `ImageResponse`, prerender statis lewat
+  `generateStaticParams` sendiri karena ini route terpisah dari
+  `page.tsx`). `generateMetadata` di `page.tsx` diisi `openGraph`/`twitter`
+  fields, plus `<script type="application/ld+json">` schema.org `Product`
+  ditempel di body halaman. **Wajib ada `metadataBase`** di
+  `layout.tsx` (`https://arung-parfumary.pages.dev`) — tanpa itu URL
+  `og:image` resolve ke `localhost:3000` di production (sempat kejadian,
+  sudah diperbaiki)
+
+---
+
 ## 📁 Struktur File
 
 ```
@@ -155,24 +188,27 @@ Arung Perfumery/
 ├── AGENTS.md                    ← catatan Next.js version-awareness (auto)
 ├── src/
 │   ├── app/
-│   │   ├── layout.tsx            ← font, metadata, Header+Footer wrapper
+│   │   ├── layout.tsx            ← font, metadata (+metadataBase!), Header+Footer wrapper
 │   │   ├── page.tsx               ← Beranda (Hero + Racikan Unggulan)
 │   │   ├── globals.css            ← design tokens (Tailwind v4 @theme)
-│   │   ├── katalog/page.tsx       ← render KatalogGrid (filter gender)
-│   │   ├── produk/[slug]/page.tsx ← detail produk + piramida + accords
+│   │   ├── katalog/page.tsx       ← render KatalogGrid (filter+matcher)
+│   │   ├── produk/[slug]/page.tsx ← detail produk + piramida + accords + JSON-LD
+│   │   ├── produk/[slug]/opengraph-image.tsx ← OG image dinamis (sesi #4)
 │   │   └── tentang/page.tsx        ← Tentang + Kontak digabung (sesi #3)
 │   ├── components/
 │   │   ├── Header.tsx / Footer.tsx ← NAV cuma Katalog + Tentang (sesi #3)
 │   │   ├── Hero.tsx                ← client component, animasi entrance
 │   │   ├── ProductCard.tsx
-│   │   ├── KatalogGrid.tsx         ← client component, filter gender (sesi #3)
+│   │   ├── KatalogGrid.tsx         ← client component, filter+matcher (sesi #3/#4)
 │   │   ├── PyramidNotes.tsx / MainAccords.tsx ← accord bar berwarna per family (sesi #3)
 │   │   ├── BottleIllustration.tsx  ← SVG original, client component (useId)
 │   │   ├── BrandMark.tsx           ← logo swirl mark SVG (sesi #2)
 │   │   ├── PageTransition.tsx      ← animasi gold-wipe antar halaman (sesi #2)
 │   │   └── Reveal.tsx              ← scroll-reveal wrapper (framer-motion)
 │   └── lib/
-│       └── products.ts             ← DATA PRODUK + WHATSAPP_NUMBER + whatsappOrderUrl/whatsappGeneralUrl
+│       ├── products.ts             ← DATA PRODUK + WHATSAPP_NUMBER + whatsappOrderUrl/whatsappGeneralUrl
+│       ├── accordFamily.ts         ← family aroma dari mainAccords (sesi #4)
+│       └── scentMatcher.ts         ← keyword matcher untuk scent finder (sesi #4)
 ├── docs/superpowers/specs/         ← spec desain (mis. redesign navbar/logo/tema)
 ├── docs/superpowers/plans/         ← plan implementasi per spec
 └── start-dev.bat                   ← launcher dev server (auto-buka browser, port 3001)
