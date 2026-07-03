@@ -279,6 +279,23 @@ Tujuan: pelanggan lihat katalog racikan → tertarik secara visual → klik
   di kalkulator, pesan WA ter-prefill lengkap dengan konsentrasi &
   estimasi harga asli; kalau belum pilih, tetap pakai format placeholder
   kosong seperti biasa
+- **Infinite scroll di katalog** — `PAGE_SIZE = 20` di `KatalogGrid.tsx`.
+  Render cuma 20 kartu pertama (`visibleProducts`), sentinel `<div>` kosong
+  di bawah grid dipantau `IntersectionObserver` (`rootMargin: "600px"`) —
+  begitu sentinel mendekati viewport, `visibleCount` nambah 20 lagi. Reset
+  balik ke 20 pakai pola "derive during render" (bandingkan `filterKey`
+  gabungan gender+waktu+aroma+query, bukan `useEffect` — sama kayak fix di
+  `Header.tsx` sesi #2, ESLint `react-hooks/set-state-in-effect` melarang
+  `setState` langsung di body effect). Semua data 43 produk tetap di
+  client sejak awal (static export) — infinite scroll ini cuma reveal
+  bertahap, **bukan** fetch data baru, jadi tidak perlu loading
+  state/spinner. **Belum bisa diverifikasi interaktif** di preview tool
+  sesi ini — tab preview kebaca `document.hidden = true` (background),
+  yang bikin `IntersectionObserver` (dan animasi CSS lain, lihat catatan
+  sesi #2/#3) tidak pernah fire sama sekali, dites langsung di elemen yang
+  jelas kelihatan pun tidak trigger. Logic-nya standard & `tsc`/`eslint`/
+  build semua lolos — tapi kalau nanti pertama kali dites di browser asli,
+  cek beneran jalan pas scroll ke bawah katalog
 
 ---
 

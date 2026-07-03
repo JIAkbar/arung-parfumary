@@ -8,6 +8,7 @@ import type { Gender, Product, WaktuPakai } from "@/lib/products";
 
 const GENDER_FILTERS = ["Semua", "Pria", "Wanita", "Unisex"];
 const WAKTU_FILTERS = ["Semua", "Pagi", "Siang", "Sore", "Malam"];
+const PAGE_SIZE = 20;
 
 function FilterDropdown({
   label,
@@ -102,6 +103,8 @@ export default function KatalogGrid({ products }: { products: Product[] }) {
   const [aroma, setAroma] = useState("Semua");
   const [query, setQuery] = useState("");
   const [openField, setOpenField] = useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   // Aroma = accord dominan tiap racikan (mainAccords[0], sudah descending),
   // dipakai apa adanya — biar konsisten dengan label yang tampil di grafik
@@ -125,6 +128,35 @@ export default function KatalogGrid({ products }: { products: Product[] }) {
   const matched = trimmedQuery ? matchProducts(trimmedQuery, base) : null;
   const filtered = matched ? matched.map((m) => m.product) : base;
   const queryHasNoMatch = matched !== null && matched.length === 0;
+
+  // Balik ke halaman pertama tiap kali filter/pencarian berubah (dibandingkan
+  // saat render, bukan di useEffect, biar tidak trigger render tambahan).
+  const filterKey = `${gender}|${waktu}|${aroma}|${trimmedQuery}`;
+  const [lastFilterKey, setLastFilterKey] = useState(filterKey);
+  if (filterKey !== lastFilterKey) {
+    setLastFilterKey(filterKey);
+    setVisibleCount(PAGE_SIZE);
+  }
+
+  // Infinite scroll: nambah PAGE_SIZE tiap sentinel di bawah grid kelihatan.
+  // Semua data produk sudah ada di client (static export), jadi ini cuma
+  // nambah jumlah kartu yang di-render — tidak ada fetch/loading state.
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisibleCount((c) => Math.min(c + PAGE_SIZE, filtered.length));
+        }
+      },
+      { rootMargin: "600px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [filtered.length]);
+
+  const visibleProducts = filtered.slice(0, visibleCount);
 
   return (
     <div>
@@ -183,13 +215,18 @@ export default function KatalogGrid({ products }: { products: Product[] }) {
           Belum ada racikan untuk kombinasi filter ini.
         </p>
       ) : (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
-          {filtered.map((product, i) => (
-            <Reveal key={product.slug} delay={(i % 3) * 0.08}>
-              <ProductCard product={product} />
-            </Reveal>
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
+            {visibleProducts.map((product, i) => (
+              <Reveal key={product.slug} delay={(i % 3) * 0.08}>
+                <ProductCard product={product} />
+              </Reveal>
+            ))}
+          </div>
+          {visibleCount < filtered.length && (
+            <div ref={sentinelRef} className="h-1" aria-hidden="true" />
+          )}
+        </>
       )}
     </div>
   );
