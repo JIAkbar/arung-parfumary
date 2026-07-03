@@ -15,9 +15,14 @@ export default function ProductCard({ product }: { product: Product }) {
         />
       </div>
       <div className="flex flex-1 flex-col gap-2 p-5">
-        <span className="w-fit rounded-full border border-gold/40 px-2 py-0.5 text-[10px] uppercase tracking-wider text-gold">
-          {product.grade}
-        </span>
+        <div className="flex flex-wrap gap-1.5">
+          <span className="w-fit rounded-full border border-gold/40 px-2 py-0.5 text-[10px] uppercase tracking-wider text-gold">
+            {product.grade}
+          </span>
+          <span className="w-fit rounded-full border border-border px-2 py-0.5 text-[10px] uppercase tracking-wider text-ink-muted">
+            {product.gender}
+          </span>
+        </div>
         <h3 className="font-serif text-lg text-foreground">{product.nama}</h3>
         <p className="line-clamp-2 text-sm text-ink-muted">
           {product.ringkasan}

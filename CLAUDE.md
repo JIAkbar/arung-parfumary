@@ -121,6 +121,21 @@ Tujuan: pelanggan lihat katalog racikan → tertarik secara visual → klik
   perlu dijaga) — kalau nanti ternyata perlu, static export tidak
   mendukung `redirects()` di `next.config.ts`, jadi redirect harus pakai
   halaman client-side atau meta-refresh
+- **6 racikan baru ditambahkan** (total jadi 9): `Iris Amber`,
+  `Bergamot Chai`, `Apricot Rose`, `Lavender Marine`, `Cardamom Amber`,
+  `Bergamot Ambroxan` — lihat tabel referensi di bawah untuk terinspirasi
+  dari apa
+- **Field baru di `Product`**: `gender: "Pria" | "Wanita" | "Unisex"` dan
+  `waktuPakai: ("Pagi" | "Siang" | "Sore" | "Malam")[]` — **wajib diisi**
+  untuk setiap racikan baru mulai sekarang. `gender` ikut klasifikasi resmi
+  Fragrantica ("for men" → Pria, "for women and men" → Unisex, dst — jangan
+  asal tebak dari nama/vibe). `waktuPakai` pilih 1–2 slot yang paling pas
+  (bukan asal semua slot) berdasarkan karakter aroma: citrus/aquatic segar
+  → Pagi/Siang, floral/fruity elegan → Siang/Sore, sweet/spicy/dark →
+  Sore/Malam. Boleh 3 slot kalau racikan memang genuinely serbaguna
+  (jarang — cuma `Bergamot Ambroxan` yang dapat 3 slot sejauh ini). Kedua
+  field ini tampil sebagai badge/tag di `ProductCard.tsx` dan
+  `produk/[slug]/page.tsx`
 
 ---
 
@@ -190,6 +205,12 @@ produk resmi brand manapun (lihat disclaimer di footer).
 | Verdant Fig | Mykonos — Down to Earth | fragrantica.com/perfume/Mykonos/Down-to-Earth-120471.html |
 | Rosé Bergamot | Mykonos — Monaco Royale | fragrantica.com/perfume/Mykonos/Monaco-Royale-121113.html |
 | Praline Tonka | Mykonos — Cafe Drops | fragrantica.com/perfume/Mykonos/Cafe-Drops-120463.html |
+| Iris Amber | SAFF & Co. — Solaris | fragrantica.com/perfume/SAFF-Co/Solaris-98616.html |
+| Bergamot Chai | Mykonos — Inception | fragrantica.com/perfume/Mykonos/Inception-121107.html |
+| Apricot Rose | Mykonos — Utopia | fragrantica.com/perfume/Mykonos/Utopia-121138.html |
+| Lavender Marine | Mykonos — California Blue | fragrantica.com/perfume/Mykonos/California-Blue-120464.html |
+| Cardamom Amber | Rabanne — Black XS (2005, original) | fragrantica.com/perfume/Rabanne/Black-XS-514.html |
+| Bergamot Ambroxan | Dior — Sauvage (2015 EDT, original) | fragrantica.com/perfume/Dior/Sauvage-31861.html |
 
 Kalau tambah racikan baru lewat alur di atas, **selalu update tabel ini**
 juga — jangan cuma isi `fragranticaUrl` di `products.ts`.
