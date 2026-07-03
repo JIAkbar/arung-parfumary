@@ -3,7 +3,7 @@
 # claude.md — Arung Perfumery (brand: Arung Wangi)
 
 > Konteks proyek untuk dilanjutkan sesi berikutnya.
-> Diperbarui: 2026-07-03 (sesi #8 — fitur "Racikan Serupa" di halaman detail)
+> Diperbarui: 2026-07-03 (sesi #8 — Racikan Serupa + sitemap.xml/robots.txt)
 
 ---
 
@@ -383,6 +383,19 @@ permintaan user.
   browser — section muncul dengan 4 racikan woody/gourmand yang masuk
   akal (Hazelnut Amberwood, Oud Mint, Smoked Cherry, Candy Apple Leather),
   tidak ada error console
+- **`src/app/sitemap.ts` + `src/app/robots.ts`** (baru) — file convention
+  Next.js (`MetadataRoute.Sitemap`/`MetadataRoute.Robots`), auto-generate
+  `sitemap.xml` (3 halaman statis + 69 URL produk = 72 `<url>`) dan
+  `robots.txt` (allow semua, arahkan ke sitemap) saat build. **Wajib**
+  `export const dynamic = "force-static"` di kedua file — tanpa itu
+  `next build` gagal dengan `output: "export"` (Next.js 16 butuh opt-in
+  eksplisit ini untuk route handler metadata, beda dari versi lama yang
+  otomatis static). `BASE_URL` di-hardcode sama seperti `metadataBase` di
+  `layout.tsx` (belum ada satu konstanta shared — kalau domain berubah,
+  ingat update di 3 tempat: `layout.tsx`, `sitemap.ts`, `robots.ts`).
+  Verifikasi: build sukses generate `/robots.txt` + `/sitemap.xml`
+  (146 halaman total), isi keduanya dicek manual (`out/robots.txt`,
+  `out/sitemap.xml` — 72 `<url>` cocok dengan jumlah racikan+halaman statis)
 
 ---
 
