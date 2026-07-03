@@ -1,4 +1,9 @@
-import { getProductBySlug, products, whatsappOrderUrl } from "@/lib/products";
+import {
+  VOLUME_REQUEST,
+  getProductBySlug,
+  products,
+  whatsappOrderUrl,
+} from "@/lib/products";
 import BottleIllustration from "@/components/BottleIllustration";
 import PyramidNotes from "@/components/PyramidNotes";
 import MainAccords from "@/components/MainAccords";
@@ -59,6 +64,9 @@ export default async function ProdukDetailPage({
               </span>
             ))}
           </div>
+          <p className="mt-2 text-xs text-ink-muted">
+            Butuh {VOLUME_REQUEST} ml? Bisa request, tinggal sebut di pesan WhatsApp.
+          </p>
 
           <p className="mt-6 font-serif text-2xl text-foreground">
             Mulai Rp{product.hargaMulai.toLocaleString("id-ID")}

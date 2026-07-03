@@ -3,7 +3,7 @@
 # claude.md — Arung Perfumery (brand: Arung Wangi)
 
 > Konteks proyek untuk dilanjutkan sesi berikutnya.
-> Diperbarui: 2026-07-03 (sesi #2 — redesign navbar/logo/tema/transisi + deploy)
+> Diperbarui: 2026-07-03 (sesi #3 — katalog racikan riil, ukuran seragam, merge Tentang+Kontak)
 
 ---
 
@@ -93,6 +93,37 @@ Tujuan: pelanggan lihat katalog racikan → tertarik secara visual → klik
 
 ---
 
+## ✅ Progress Sesi #3 (2026-07-03)
+
+- **Katalog dirombak jadi 3 racikan riil** (`Gilded Noir`, `Velvet Santal`,
+  `Azure Neroli` dari sesi #1 **dihapus** — tidak ada referensi parfum
+  aslinya yang tercatat, jadi dianggap dummy). Sisa 3 racikan yang semuanya
+  punya `fragranticaUrl` jelas: `Verdant Fig`, `Rosé Bergamot`,
+  `Praline Tonka` (lihat tabel referensi di bawah)
+- **Main Accords sekarang berwarna per family aroma** (`MainAccords.tsx`)
+  — sebelumnya semua bar pakai gradient emas polos, sekarang tiap accord
+  (Woody/Citrus/Floral/dst) dapat warna sendiri via helper `accordGradient()`
+  yang cocokkan nama accord (case-insensitive, keyword match) ke palet
+  warna. Accord yang tidak dikenali fallback ke gradient emas default
+  (`var(--gold-light)` → `var(--gold)`)
+- **Ukuran botol diseragamkan**: semua racikan sekarang pakai
+  `VOLUME_TERSEDIA_DEFAULT = [15, 20, 30, 50]` (`src/lib/products.ts`),
+  bukan array custom per produk lagi. Ukuran **100 ml tidak dijual
+  reguler** — ditawarkan sebagai request via WhatsApp (`VOLUME_REQUEST =
+  100`), muncul sebagai teks kecil di bawah pilihan ukuran di halaman
+  produk (`produk/[slug]/page.tsx`)
+- **Halaman Tentang + Kontak digabung jadi satu** (`/tentang`) — konten
+  Kontak (heading "Ada Pertanyaan?" + tombol WhatsApp) ditempel sebagai
+  section kedua di `tentang/page.tsx`, dipisah garis `border-gold-hairline`.
+  Route `/kontak` **dihapus total** (folder `src/app/kontak/` dihapus),
+  `NAV` di `Header.tsx` sekarang cuma 2 item: Katalog, Tentang. Tidak ada
+  redirect dari `/kontak` lama (situs baru live, belum ada backlink yang
+  perlu dijaga) — kalau nanti ternyata perlu, static export tidak
+  mendukung `redirects()` di `next.config.ts`, jadi redirect harus pakai
+  halaman client-side atau meta-refresh
+
+---
+
 ## 📁 Struktur File
 
 ```
@@ -106,13 +137,12 @@ Arung Perfumery/
 │   │   ├── globals.css            ← design tokens (Tailwind v4 @theme)
 │   │   ├── katalog/page.tsx       ← grid semua produk
 │   │   ├── produk/[slug]/page.tsx ← detail produk + piramida + accords
-│   │   ├── tentang/page.tsx
-│   │   └── kontak/page.tsx
+│   │   └── tentang/page.tsx        ← Tentang + Kontak digabung (sesi #3)
 │   ├── components/
-│   │   ├── Header.tsx / Footer.tsx
+│   │   ├── Header.tsx / Footer.tsx ← NAV cuma Katalog + Tentang (sesi #3)
 │   │   ├── Hero.tsx                ← client component, animasi entrance
 │   │   ├── ProductCard.tsx
-│   │   ├── PyramidNotes.tsx / MainAccords.tsx
+│   │   ├── PyramidNotes.tsx / MainAccords.tsx ← accord bar berwarna per family (sesi #3)
 │   │   ├── BottleIllustration.tsx  ← SVG original, client component (useId)
 │   │   ├── BrandMark.tsx           ← logo swirl mark SVG (sesi #2)
 │   │   ├── PageTransition.tsx      ← animasi gold-wipe antar halaman (sesi #2)
@@ -129,11 +159,19 @@ Arung Perfumery/
 ## 🧪 Alur Konten Produk Baru
 
 User sebutkan nama parfum yang mau direplikasi (mis. "Mykonoz Monaco
-Royal") → Claude baca halaman Fragrantica publik (WebFetch) → rangkum
-**main accords** + **piramida notes** sebagai referensi fakta (bukan
-salin teks/gambar editorial Fragrantica) → tulis deskripsi sendiri →
-tambah entry baru di `src/lib/products.ts` dengan `hargaMulai:
-HARGA_MULAI_DEFAULT`.
+Royal") → Claude baca halaman Fragrantica publik (WebFetch, kalau 403
+coba WebSearch dulu buat cari ringkasan notes-nya) → rangkum **main
+accords** + **piramida notes** sebagai referensi fakta (bukan salin
+teks/gambar editorial Fragrantica) → tulis nama & deskripsi racikan
+sendiri (jangan pakai nama brand aslinya) → tambah entry baru di
+`src/lib/products.ts` dengan `hargaMulai: HARGA_MULAI_DEFAULT` dan
+`volumeTersedia: VOLUME_TERSEDIA_DEFAULT` (jangan bikin array ukuran
+custom lagi — semua racikan wajib ukuran yang sama: 15/20/30/50 ml,
+100 ml via request).
+
+**Wajib selalu isi `fragranticaUrl`** dengan link Fragrantica asli — kalau
+tidak ada referensi spesifik yang bisa dicatat, jangan tambahkan racikan
+itu (lihat catatan penghapusan 3 racikan dummy di Progress Sesi #3).
 
 **Foto produk**: belum ada foto asli — pakai `BottleIllustration` (SVG
 generated, warna beda per produk via prop `bottleColor`). Kalau nanti ada

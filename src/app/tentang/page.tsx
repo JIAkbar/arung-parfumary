@@ -1,6 +1,7 @@
+import { whatsappGeneralUrl } from "@/lib/products";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Tentang — Arung Wangi" };
+export const metadata: Metadata = { title: "Tentang & Kontak — Arung Wangi" };
 
 export default function TentangPage() {
   return (
@@ -27,6 +28,27 @@ export default function TentangPage() {
           top notes yang menyambut, middle notes yang jadi jantung aroma,
           hingga base notes yang membekas di akhir hari.
         </p>
+      </div>
+
+      <div className="mt-16 border-t border-gold-hairline pt-16 text-center">
+        <span className="text-xs uppercase tracking-[0.3em] text-gold">
+          Kontak
+        </span>
+        <h2 className="mt-2 font-serif text-3xl text-foreground">
+          Ada Pertanyaan?
+        </h2>
+        <p className="mx-auto mt-4 max-w-md text-sm text-ink-muted">
+          Konsultasi aroma, tanya ketersediaan, atau mau pesan custom racikan —
+          hubungi kami langsung lewat WhatsApp.
+        </p>
+        <a
+          href={whatsappGeneralUrl()}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-8 inline-block rounded-full bg-gold px-10 py-3 text-sm font-medium text-white transition-colors hover:bg-gold-light"
+        >
+          Chat via WhatsApp
+        </a>
       </div>
     </section>
   );

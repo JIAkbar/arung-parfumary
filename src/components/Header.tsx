@@ -8,7 +8,6 @@ import BrandMark from "@/components/BrandMark";
 const NAV = [
   { href: "/katalog", label: "Katalog" },
   { href: "/tentang", label: "Tentang" },
-  { href: "/kontak", label: "Kontak" },
 ];
 
 export default function Header() {

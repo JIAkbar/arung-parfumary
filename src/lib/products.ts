@@ -28,6 +28,11 @@ export const WHATSAPP_NUMBER = "6289900447098";
 // Harga mulai seragam untuk semua racikan
 export const HARGA_MULAI_DEFAULT = 20000;
 
+// Ukuran botol seragam untuk semua racikan. 100ml tidak dijual reguler,
+// tapi bisa direquest lewat WhatsApp (lihat VOLUME_REQUEST di halaman produk).
+export const VOLUME_TERSEDIA_DEFAULT = [15, 20, 30, 50];
+export const VOLUME_REQUEST = 100;
+
 export function whatsappOrderUrl(namaProduk: string) {
   const pesan = [
     `Halo Arung Wangi, saya mau pesan racikan *${namaProduk}*.`,
@@ -65,7 +70,7 @@ export const products: Product[] = [
     nama: "Verdant Fig",
     grade: "Premium",
     hargaMulai: HARGA_MULAI_DEFAULT,
-    volumeTersedia: [15, 30, 50],
+    volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Hijau, earthy, dan sedikit smoky — seperti hutan basah selepas hujan.",
     deskripsi:
       "Racikan woody-aromatic yang membuka dengan buah ara hijau dan teh matcha, diselingi asap kemenyan dan kayu manis halus. Di tengah, cashmere wood dan jeruk memberi sentuhan creamy-citrus sebelum turun ke vetiver, cendana, dan cedar yang earthy — mengingatkan pada tanah basah dan dedaunan setelah hujan. Cocok untuk yang suka aroma tenang, natural, dan tidak terlalu manis.",
@@ -90,7 +95,7 @@ export const products: Product[] = [
     nama: "Rosé Bergamot",
     grade: "Premium",
     hargaMulai: HARGA_MULAI_DEFAULT,
-    volumeTersedia: [15, 30, 50],
+    volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Citrus cerah bertemu mawar dan buah-buahan — mewah ala French Riviera.",
     deskripsi:
       "Dibuka dengan bergamot, jeruk, dan lemon yang segar, racikan ini mengalir ke jantung mawar yang dipadukan aprikot, raspberry, dan plum — manis tapi tidak berlebihan. Ambrette memberi kesan bersih sebelum mengendap di cedar, vetiver, amber, dan musk yang hangat. Cocok dipakai siang ke malam, untuk yang suka kesan glamor tanpa terlalu berat.",
@@ -114,7 +119,7 @@ export const products: Product[] = [
     nama: "Praline Tonka",
     grade: "Medium",
     hargaMulai: HARGA_MULAI_DEFAULT,
-    volumeTersedia: [15, 30],
+    volumeTersedia: VOLUME_TERSEDIA_DEFAULT,
     ringkasan: "Manis creamy seperti tiramisu, dengan kopi yang muncul samar di baliknya.",
     deskripsi:
       "Gourmand manis yang membuka dengan aroma kopi lembut berpadu anggrek dan melati, lalu mengalir ke vanilla-susu yang creamy dan karamel — mengingatkan pada tiramisu segar. Amber, patchouli, dan musk di dasar memberi sedikit kehangatan tanpa menutupi kesan manis-milky-nya. Lebih ringan dan playful dibanding Gilded Noir, cocok dipakai harian untuk yang suka wangi manis.",
