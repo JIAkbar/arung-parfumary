@@ -18,6 +18,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://arung-parfumary.pages.dev"),
   title: "Arung Wangi — Racikan Parfum Artisan",
   description:
     "Parfum racikan artisan, diracik sendiri dengan bibit fragrance oil premium.",

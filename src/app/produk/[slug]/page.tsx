@@ -22,7 +22,15 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const product = getProductBySlug(slug);
-  return { title: product ? `${product.nama} — Arung Wangi` : "Produk" };
+  if (!product) return { title: "Produk" };
+
+  const title = `${product.nama} — Arung Wangi`;
+  return {
+    title,
+    description: product.ringkasan,
+    openGraph: { title, description: product.ringkasan },
+    twitter: { card: "summary_large_image", title, description: product.ringkasan },
+  };
 }
 
 export default async function ProdukDetailPage({
@@ -34,8 +42,26 @@ export default async function ProdukDetailPage({
   const product = getProductBySlug(slug);
   if (!product) notFound();
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.nama,
+    description: product.ringkasan,
+    brand: { "@type": "Brand", name: "Arung Wangi" },
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "IDR",
+      price: product.hargaMulai,
+      availability: "https://schema.org/InStock",
+    },
+  };
+
   return (
     <section className="mx-auto max-w-5xl px-6 py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
         <div className="flex items-center justify-center rounded-2xl bg-gradient-to-b from-[#f1ede6] to-[#e7e2da] py-16">
           <BottleIllustration
