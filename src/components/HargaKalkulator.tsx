@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   KONSENTRASI_LIST,
   KONSENTRASI_DESKRIPSI,
@@ -11,9 +11,53 @@ import {
 } from "@/lib/hargaKalkulator";
 import { whatsappOrderUrl, VOLUME_REQUEST, type Product } from "@/lib/products";
 
+function VarianWarningModal({ onClose }: { onClose: () => void }) {
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 px-6"
+      onClick={onClose}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="varian-warning-title"
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-sm rounded-2xl border border-gold-hairline bg-background p-6 text-center shadow-xl"
+      >
+        <h2
+          id="varian-warning-title"
+          className="font-serif text-xl text-foreground"
+        >
+          Pilih ukuran dulu ya
+        </h2>
+        <p className="mt-2 text-sm text-ink-muted">
+          Supaya kami bisa kasih estimasi harga yang pas, pilih ukuran
+          botolnya dulu di atas.
+        </p>
+        <button
+          type="button"
+          onClick={onClose}
+          className="mt-5 inline-block rounded-full bg-gold px-8 py-2.5 text-sm font-medium text-white transition-colors hover:bg-gold-light"
+        >
+          Oke, saya pilih dulu
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function HargaKalkulator({ product }: { product: Product }) {
   const [volume, setVolume] = useState<number | null>(null);
   const [konsentrasi, setKonsentrasi] = useState<Konsentrasi>("EDP");
+  const [showVarianWarning, setShowVarianWarning] = useState(false);
 
   const dipilih = volume !== null;
   const { low, high } = dipilih
@@ -54,14 +98,13 @@ export default function HargaKalkulator({ product }: { product: Product }) {
             (Cologne/EDT/EDP/Extrait).
           </p>
 
-          <a
-            href={whatsappOrderUrl(product.nama)}
-            target="_blank"
-            rel="noreferrer"
+          <button
+            type="button"
+            onClick={() => setShowVarianWarning(true)}
             className="mt-4 inline-block rounded-full bg-gold px-8 py-3 text-sm font-medium text-white transition-colors hover:bg-gold-light"
           >
             Pesan via WhatsApp
-          </a>
+          </button>
         </>
       ) : (
         <>
@@ -111,6 +154,10 @@ export default function HargaKalkulator({ product }: { product: Product }) {
             Pesan via WhatsApp
           </a>
         </>
+      )}
+
+      {showVarianWarning && (
+        <VarianWarningModal onClose={() => setShowVarianWarning(false)} />
       )}
     </div>
   );
