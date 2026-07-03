@@ -149,9 +149,6 @@ produk resmi brand manapun (lihat disclaimer di footer).
 
 | Racikan (di web) | Terinspirasi dari | Link Fragrantica |
 |---|---|---|
-| Gilded Noir | Tidak tercatat spesifik (genre coffee-gourmand umum, dibuat sesi #1) | — |
-| Velvet Santal | Tidak tercatat spesifik (genre woody floral umum, dibuat sesi #1) | — |
-| Azure Neroli | Tidak tercatat spesifik (genre citrus-aquatic umum, dibuat sesi #1) | — |
 | Verdant Fig | Mykonos — Down to Earth | fragrantica.com/perfume/Mykonos/Down-to-Earth-120471.html |
 | Rosé Bergamot | Mykonos — Monaco Royale | fragrantica.com/perfume/Mykonos/Monaco-Royale-121113.html |
 | Praline Tonka | Mykonos — Cafe Drops | fragrantica.com/perfume/Mykonos/Cafe-Drops-120463.html |
