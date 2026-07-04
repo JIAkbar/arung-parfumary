@@ -3,7 +3,7 @@
 # claude.md — Arung Perfumery (brand: Arung Wangi)
 
 > Konteks proyek untuk dilanjutkan sesi berikutnya.
-> Diperbarui: 2026-07-03 (sesi #9 — gerbang pilih ukuran sebelum WhatsApp + hapus WA Footer)
+> Diperbarui: 2026-07-04 (sesi #10 — halaman pencarian referensi racikan internal `/racikan`)
 
 ---
 
@@ -464,6 +464,55 @@ permintaan user.
 
 ---
 
+## ✅ Progress Sesi #10 (2026-07-04) — Halaman Pencarian Referensi Racikan Internal
+
+- **Alasan**: pemilik toko butuh cara cepat cari "racikan ini terinspirasi
+  dari parfum apa" saat ada pesanan masuk lewat WhatsApp (mis. pembeli
+  nanya "ini mirip parfum apa?" atau owner sendiri lupa referensi salah
+  satu dari 69 racikan) — sebelumnya jawabannya cuma ada di tabel markdown
+  raksasa di `CLAUDE.md`, tidak praktis dibuka dari HP di tengah chat WA
+- **Data dipindah dari tabel markdown ke kode**: `src/lib/referensiRacikan.ts`
+  (baru, dibuat Task 1 dari plan ini) sekarang jadi **satu-satunya sumber**
+  pemetaan racikan → brand/parfum asli (69 entri, field `racikan`,
+  `referensiBrand`, `referensiParfum`, `fragranticaUrl`) — tabel 69 baris
+  yang sebelumnya nempel di bagian "Alur Konten Produk Baru" di file ini
+  **sudah dihapus**, digantikan paragraf ringkas yang menunjuk ke file
+  kode tsb (lihat section di bawah)
+- **Route baru `/racikan`** (`src/app/racikan/page.tsx`, Task 2) — render
+  `ReferensiRacikanTable` (`src/components/ReferensiRacikanTable.tsx`,
+  client component) yang menampilkan tabel 3 kolom (Nama Racikan, Brand &
+  Parfum Asli, link Fragrantica) plus kotak pencarian real-time
+  (client-side, cocokkan ke `racikan`/`referensiBrand`/`referensiParfum`
+  sekaligus — jadi ngetik nama brand seperti "Rasasi" tetap ketemu
+  racikannya "Plum Driftwood", tidak harus tahu nama racikan di web dulu).
+  Counter "N dari 69 racikan" update tiap ketik, dan tampil pesan jujur
+  "Tidak ditemukan racikan yang cocok dengan ..." kalau hasil filter kosong
+- **Keputusan privasi (dikonfirmasi user)**: halaman ini **sengaja tidak
+  ditaut** dari `Header`/`Footer`/navigasi manapun (URL tersembunyi/
+  unlisted), **`metadata.robots = { index: false, follow: false }`** di
+  `page.tsx` sendiri, dan `/racikan` masuk `Disallow` di `src/app/robots.ts`
+  — jadi tidak muncul di `sitemap.xml` maupun diindeks mesin pencari.
+  **Ini bukan keamanan beneran** — tidak ada password/login, siapapun yang
+  tahu/menebak URL persis bisa buka halamannya. Cukup untuk kebutuhan
+  sekarang (owner cuma butuh akses cepat dari HP sendiri, bukan
+  menyembunyikan dari serangan aktif) — kalau nanti butuh proteksi lebih
+  serius, perlu auth beneran (di luar scope static export saat ini)
+- Verifikasi: `preview_snapshot` di `/racikan` — judul "Referensi Racikan"
+  tampil, kotak pencarian ada, counter "69 dari 69 racikan"; isi kotak
+  dengan "Iris Amber" → tersaring ke 1 baris ("1 dari 69 racikan"); isi
+  dengan "Rasasi" (nama brand) → tersaring ke baris "Plum Driftwood"
+  (referensinya Rasasi — Hawas Ice), membuktikan pencarian ikut mencocokkan
+  `referensiBrand`; isi dengan string acak → pesan "Tidak ditemukan..."
+  muncul. `preview_snapshot` di `/` (Beranda) — nav cuma "Katalog" +
+  "Tentang", tidak ada link/teks "Referensi Racikan" di manapun. Tidak ada
+  error console di kedua halaman. `next build --webpack` sukses generate
+  **147 halaman statis** (146 sebelumnya + 1 route baru `/racikan`).
+  `grep "racikan</loc>" out/sitemap.xml` tidak menemukan apapun (sesuai
+  harapan — tidak ada di sitemap), `out/robots.txt` memuat
+  `Disallow: /racikan`
+
+---
+
 ## 📁 Struktur File
 
 ```
@@ -478,7 +527,8 @@ Arung Perfumery/
 │   │   ├── katalog/page.tsx       ← render KatalogGrid (filter+matcher)
 │   │   ├── produk/[slug]/page.tsx ← detail produk + piramida + accords + JSON-LD
 │   │   ├── produk/[slug]/opengraph-image.tsx ← OG image dinamis (sesi #4)
-│   │   └── tentang/page.tsx        ← Tentang + Kontak digabung (sesi #3)
+│   │   ├── tentang/page.tsx        ← Tentang + Kontak digabung (sesi #3)
+│   │   └── racikan/page.tsx        ← pencarian referensi racikan, internal/tersembunyi (sesi #10)
 │   ├── components/
 │   │   ├── Header.tsx / Footer.tsx ← NAV cuma Katalog + Tentang (sesi #3)
 │   │   ├── Hero.tsx                ← client component, animasi entrance
@@ -489,13 +539,15 @@ Arung Perfumery/
 │   │   ├── BottleIllustration.tsx  ← SVG original, client component (useId)
 │   │   ├── BrandMark.tsx           ← logo swirl mark SVG (sesi #2)
 │   │   ├── PageTransition.tsx      ← animasi gold-wipe antar halaman (sesi #2)
-│   │   └── Reveal.tsx              ← scroll-reveal wrapper (framer-motion)
+│   │   ├── Reveal.tsx              ← scroll-reveal wrapper (framer-motion)
+│   │   └── ReferensiRacikanTable.tsx ← tabel + pencarian client-side untuk /racikan (sesi #10)
 │   └── lib/
 │       ├── products.ts             ← DATA PRODUK + WHATSAPP_NUMBER + whatsappOrderUrl/whatsappGeneralUrl
 │       ├── hargaKalkulator.ts      ← rumus harga per ukuran+konsentrasi (sesi #6, KONSTANTA BIAYA DI SINI)
 │       ├── accordFamily.ts         ← family aroma dari mainAccords (sesi #4)
 │       ├── scentMatcher.ts         ← keyword matcher untuk scent finder (sesi #4)
-│       └── relatedProducts.ts      ← scoring "Racikan Serupa" di halaman detail (sesi #8)
+│       ├── relatedProducts.ts      ← scoring "Racikan Serupa" di halaman detail (sesi #8)
+│       └── referensiRacikan.ts     ← SATU-SATUNYA sumber data racikan→brand/parfum asli (sesi #10)
 ├── docs/superpowers/specs/         ← spec desain (mis. redesign navbar/logo/tema)
 ├── docs/superpowers/plans/         ← plan implementasi per spec
 └── start-dev.bat                   ← launcher dev server (auto-buka browser, port 3001)
@@ -525,88 +577,32 @@ itu (lihat catatan penghapusan 3 racikan dummy di Progress Sesi #3).
 generated, warna beda per produk via prop `bottleColor`). Kalau nanti ada
 foto racikan asli, ganti jadi `<Image>` Next.js.
 
-### Daftar Referensi Racikan (internal, jangan tampil di website)
+**Wajib juga tambah entry baru di `src/lib/referensiRacikan.ts`** (bukan
+lagi tabel markdown di file ini, lihat section di bawah) — setiap racikan
+baru butuh pasangan entry di `products.ts` (data publik) dan di
+`referensiRacikan.ts` (data internal, racikan → brand/parfum asli).
 
-Supaya kita (bukan pengunjung situs) tahu racikan mana terinspirasi dari
-parfum apa. **Sengaja tidak ditampilkan di UI publik** — menyebut nama
-brand asli di halaman produk berisiko dibaca sebagai klaim tiruan/afiliasi
-dengan brand tsb (potensi masalah merek dagang), apalagi racikan ini bukan
-produk resmi brand manapun (lihat disclaimer di footer).
+### Referensi Racikan (data internal, jangan tampil di website)
 
-| Racikan (di web) | Terinspirasi dari | Link Fragrantica |
-|---|---|---|
-| Verdant Fig | Mykonos — Down to Earth | fragrantica.com/perfume/Mykonos/Down-to-Earth-120471.html |
-| Rosé Bergamot | Mykonos — Monaco Royale | fragrantica.com/perfume/Mykonos/Monaco-Royale-121113.html |
-| Praline Tonka | Mykonos — Cafe Drops | fragrantica.com/perfume/Mykonos/Cafe-Drops-120463.html |
-| Iris Amber | SAFF & Co. — Solaris | fragrantica.com/perfume/SAFF-Co/Solaris-98616.html |
-| Bergamot Chai | Mykonos — Inception | fragrantica.com/perfume/Mykonos/Inception-121107.html |
-| Apricot Rose | Mykonos — Utopia | fragrantica.com/perfume/Mykonos/Utopia-121138.html |
-| Lavender Marine | Mykonos — California Blue | fragrantica.com/perfume/Mykonos/California-Blue-120464.html |
-| Cardamom Amber | Rabanne — Black XS (2005, original) | fragrantica.com/perfume/Rabanne/Black-XS-514.html |
-| Bergamot Ambroxan | Dior — Sauvage (2015 EDT, original) | fragrantica.com/perfume/Dior/Sauvage-31861.html |
-| Cinnamon Oud | Lattafa Perfumes — Khamrah | fragrantica.com/perfume/Lattafa-Perfumes/Khamrah-75805.html |
-| Ginger Ambroxan | Louis Vuitton — Imagination | fragrantica.com/perfume/Louis-Vuitton/Imagination-67370.html |
-| Pineapple Birch | Creed — Aventus | fragrantica.com/perfume/Creed/Aventus-9828.html |
-| Mint Tonka | Versace — Eros (EDT original) | fragrantica.com/perfume/Versace/Eros-16657.html |
-| Plum Driftwood | Rasasi — Hawas Ice | fragrantica.com/perfume/Rasasi/Hawas-Ice-89050.html |
-| Saffron Ambergris | Maison Francis Kurkdjian — Baccarat Rouge 540 | fragrantica.com/perfume/Maison-Francis-Kurkdjian/Baccarat-Rouge-540-33519.html |
-| Midnight Coffee | Yves Saint Laurent — Black Opium | fragrantica.com/perfume/Yves-Saint-Laurent/Black-Opium-25324.html |
-| Pear Musk | Ex Nihilo — Blue Talisman | fragrantica.com/perfume/Ex-Nihilo/Blue-Talisman-84224.html |
-| Cherry Almond | Tom Ford — Lost Cherry | fragrantica.com/perfume/Tom-Ford/Lost-Cherry-51411.html |
-| Green Apple Lotus | Nautica — Nautica Voyage | fragrantica.com/perfume/Nautica/Nautica-Voyage-913.html |
-| Pineapple Patchouli | Nishane — Hacivat | fragrantica.com/perfume/Nishane/Hacivat-44174.html |
-| Lychee Rose | Parfums de Marly — Delina | fragrantica.com/perfume/Parfums-de-Marly/Delina-43871.html |
-| Apple Caramel | Afnan — 9 PM Rebel | fragrantica.com/perfume/Afnan/9-PM-Rebel-99238.html |
-| Golden Ylang | Dior — J'adore | fragrantica.com/perfume/Dior/J-adore-210.html |
-| Velvet Rose | Parfums de Marly — Delina Exclusif | fragrantica.com/perfume/Parfums-de-Marly/Delina-Exclusif-50370.html |
-| Pistachio Gelato | Kayali Fragrances — Yum Pistachio Gelato \| 33 | fragrantica.com/perfume/Kayali-Fragrances/Yum-Pistachio-Gelato-33-79846.html |
-| Pear Freesia | Jo Malone London — English Pear & Freesia | fragrantica.com/perfume/Jo-Malone-London/English-Pear-Freesia-10314.html |
-| Hazelnut Amberwood | Rabanne — 1 Million Lucky | fragrantica.com/perfume/Rabanne/1-Million-Lucky-48903.html |
-| Rose Espresso | Montale — Intense Cafe | fragrantica.com/perfume/Montale/Intense-Cafe-18021.html |
-| Jasmine Sambac | Gucci — Gucci Bloom (2017 original) | fragrantica.com/perfume/Gucci/Gucci-Bloom-44894.html |
-| Green Pepper Musk | Carolina Herrera — 212 Men | fragrantica.com/perfume/Carolina-Herrera/212-Men-297.html |
-| Almond Heliotrope | Parfums de Marly — Pegasus | fragrantica.com/perfume/Parfums-de-Marly/Pegasus-16938.html |
-| Sweet Pea Peony | Dior — Miss Dior Blooming Bouquet | fragrantica.com/perfume/Dior/Miss-Dior-Blooming-Bouquet-23280.html |
-| Tuberose Agave | Memo Paris — Marfa | fragrantica.com/perfume/Memo-Paris/Marfa-37185.html |
-| Oud Mint | Mancera — Aoud Lemon Mint | fragrantica.com/perfume/Mancera/Aoud-Lemon-Mint-39181.html |
-| Sage Amberwood | Yves Saint Laurent — Y Eau de Parfum | fragrantica.com/perfume/Yves-Saint-Laurent/Y-Eau-de-Parfum-50757.html |
-| Raspberry Rose | Louis Vuitton — Les Sables Roses | fragrantica.com/perfume/Louis-Vuitton/Les-Sables-Roses-55040.html |
-| Smoked Cherry | Tom Ford — Cherry Smoke | fragrantica.com/perfume/Tom-Ford/Cherry-Smoke-78578.html |
-| Grapefruit Jasmine | Cacharel — Amor Amor | fragrantica.com/perfume/Cacharel/Amor-Amor-238.html |
-| Gardenia Coffee | Parfums de Marly — Layton Exclusif | fragrantica.com/perfume/Parfums-de-Marly/Layton-Exclusif-46633.html |
-| Passionfruit Peony | Victoria's Secret — Bombshell | fragrantica.com/perfume/Victoria-s-Secret/Bombshell-10190.html |
-| Blackcurrant Rose | Giorgio Armani — Sì Passione | fragrantica.com/perfume/Giorgio-Armani/Si-Passione-48002.html |
-| Litsea Mint | Versace — Eros Parfum (2021) | fragrantica.com/perfume/Versace/Eros-Parfum-70090.html |
-| Melon Cappuccino | Antonio Banderas — Blue Seduction (men) | fragrantica.com/perfume/Antonio-Banderas/Blue-Seduction-1088.html |
-| Apple Lavender | Parfums de Marly — Layton | fragrantica.com/perfume/Parfums-de-Marly/Layton-39314.html |
-| Candy Apple Leather | Versace — Eros Eau de Parfum | fragrantica.com/perfume/Versace/Eros-Eau-de-Parfum-62762.html |
-| Lavender Tonka | Yves Saint Laurent — Libre Intense | fragrantica.com/perfume/Yves-Saint-Laurent/Libre-Intense-62318.html |
-| Honey Lavender | Yves Saint Laurent — Libre Le Parfum | fragrantica.com/perfume/Yves-Saint-Laurent/Libre-Le-Parfum-75676.html |
-| Grapefruit Marine | Rabanne — Invictus | fragrantica.com/perfume/Rabanne/Invictus-18471.html |
-| Soap Marine | Rabanne — Invictus Parfum | fragrantica.com/perfume/Rabanne/Invictus-Parfum-90433.html |
-| Absinthe Vanilla | Carolina Herrera — 212 VIP Black | fragrantica.com/perfume/Carolina-Herrera/212-VIP-Black-46093.html |
-| Sea Salt Sage | Jo Malone London — Wood Sage & Sea Salt | fragrantica.com/perfume/Jo-Malone-London/Wood-Sage-Sea-Salt-25529.html |
-| Petitgrain Oakmoss | Parfums de Marly — Greenley | fragrantica.com/perfume/Parfums-de-Marly/Greenley-62101.html |
-| Saffron Rose | Mancera — Instant Crush | fragrantica.com/perfume/Mancera/Instant-Crush-54885.html |
-| Grapefruit Incense | Chanel — Bleu de Chanel (EDT 2010) | fragrantica.com/perfume/Chanel/Bleu-de-Chanel-9099.html |
-| Magnolia Clove | Moschino — Toy Boy | fragrantica.com/perfume/Moschino/Toy-Boy-55858.html |
-| Passionfruit Heliotrope | Tiziana Terenzi — Kirke | fragrantica.com/perfume/Tiziana-Terenzi/Kirke-32172.html |
-| Violet Patchouli | Yves Saint Laurent — Tuxedo | fragrantica.com/perfume/Yves-Saint-Laurent/Tuxedo-32269.html |
-| Sweet Oud | Lattafa Perfumes — Ameer Al Oudh Intense Oud | fragrantica.com/perfume/Lattafa-Perfumes/Ameer-Al-Oudh-Intense-Oud-64947.html |
-| Almond Lotus | Parfums de Marly — Valaya Exclusif | fragrantica.com/perfume/Parfums-de-Marly/Valaya-Exclusif-102806.html |
-| Strawberry Peony | Yves Saint Laurent — Mon Paris | fragrantica.com/perfume/Yves-Saint-Laurent/Mon-Paris-38914.html |
-| Honey Gardenia | Jean Paul Gaultier — Scandal (women) | fragrantica.com/perfume/Jean-Paul-Gaultier/Scandal-45651.html |
-| Mirabelle Freesia | Chloé — Nomade | fragrantica.com/perfume/Chloe/Nomade-48434.html |
-| Salty Vanilla | Rabanne — Olympea (original 2015) | fragrantica.com/perfume/Rabanne/Olympea-31666.html |
-| Raspberry Leather | Tom Ford — Tuscan Leather | fragrantica.com/perfume/Tom-Ford/Tuscan-Leather-1849.html |
-| Sparkling Lychee | Kayali Fragrances — Eden Sparkling Lychee \| 39 | fragrantica.com/perfume/Kayali-Fragrances/Eden-Sparkling-Lychee-39-Eau-de-Parfum-88197.html |
-| Violet Tobacco | Tom Ford — Ombré Leather Parfum | fragrantica.com/perfume/Tom-Ford/Ombre-Leather-Parfum-68716.html |
-| Bluebell Persimmon | Jo Malone London — Wild Bluebell (original 2011) | fragrantica.com/perfume/Jo-Malone-London/Wild-Bluebell-12310.html |
-| Saffron Vetiver | Byredo — Black Saffron | fragrantica.com/perfume/Byredo/Black-Saffron-16220.html |
-| Passion Vanilla | Lancôme — Hypnose | fragrantica.com/perfume/Lancome/Hypnose-170.html |
+Pemetaan tiap racikan → brand & parfum asli yang jadi inspirasinya sekarang
+hidup di **`src/lib/referensiRacikan.ts`** (69 entri, field `racikan`,
+`referensiBrand`, `referensiParfum`, `fragranticaUrl`) — **satu-satunya
+sumber data** untuk ini, tabel markdown 69 baris yang dulu ada di sini
+sudah dipindah ke sana sepenuhnya (lihat Progress Sesi #10).
 
-Kalau tambah racikan baru lewat alur di atas, **selalu update tabel ini**
-juga — jangan cuma isi `fragranticaUrl` di `products.ts`.
+Data ini dibaca oleh halaman internal **`/racikan`**
+(`src/app/racikan/page.tsx` + `ReferensiRacikanTable.tsx`) — tabel yang
+bisa dicari real-time (nama racikan, nama brand, atau nama parfum asli),
+dipakai owner untuk lookup cepat dari HP saat ada pesanan WhatsApp masuk.
+Halaman ini **sengaja tidak ditaut** dari navigasi manapun dan diblokir
+dari indexing (lihat Progress Sesi #10 untuk detail keputusan privasinya)
+— tetap alasan yang sama seperti sebelumnya: menyebut nama brand asli di
+halaman produk **publik** berisiko dibaca sebagai klaim tiruan/afiliasi
+(potensi masalah merek dagang), jadi mapping ini harus tetap internal.
+
+Kalau tambah racikan baru lewat alur di atas, **tambah entry baru di
+`src/lib/referensiRacikan.ts`** — jangan cuma isi `fragranticaUrl` di
+`products.ts`.
 
 ---
 
