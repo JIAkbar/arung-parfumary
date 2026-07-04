@@ -3,12 +3,43 @@
 import { useState } from "react";
 import type { ReferensiRacikan } from "@/lib/referensiRacikan";
 
+type SortField = "racikanNama" | "referensiBrand";
+type SortDirection = "asc" | "desc";
+
+function SortIndicator({
+  active,
+  direction,
+}: {
+  active: boolean;
+  direction: SortDirection;
+}) {
+  if (!active) return null;
+  return (
+    <span className="ml-1 text-gold" aria-hidden="true">
+      {direction === "asc" ? "▲" : "▼"}
+    </span>
+  );
+}
+
 export default function ReferensiRacikanTable({
   data,
 }: {
   data: ReferensiRacikan[];
 }) {
   const [query, setQuery] = useState("");
+  const [sortField, setSortField] = useState<SortField | null>(null);
+  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+
+  function toggleSort(field: SortField) {
+    if (sortField !== field) {
+      setSortField(field);
+      setSortDirection("asc");
+    } else if (sortDirection === "asc") {
+      setSortDirection("desc");
+    } else {
+      setSortField(null);
+    }
+  }
 
   const trimmedQuery = query.trim().toLowerCase();
   const filtered = trimmedQuery
@@ -19,6 +50,13 @@ export default function ReferensiRacikanTable({
           item.referensiParfum.toLowerCase().includes(trimmedQuery)
       )
     : data;
+
+  const sorted = sortField
+    ? [...filtered].sort((a, b) => {
+        const cmp = a[sortField].localeCompare(b[sortField]);
+        return sortDirection === "asc" ? cmp : -cmp;
+      })
+    : filtered;
 
   return (
     <div>
@@ -33,22 +71,46 @@ export default function ReferensiRacikanTable({
         {filtered.length} dari {data.length} racikan
       </p>
 
-      {filtered.length === 0 ? (
+      {sorted.length === 0 ? (
         <p className="mt-8 text-center text-sm text-ink-muted">
-          Tidak ditemukan racikan yang cocok dengan &quot;{query}&quot;.
+          Tidak ditemukan racikan yang cocok dengan &quot;{trimmedQuery}&quot;.
         </p>
       ) : (
         <div className="mt-4 overflow-x-auto">
           <table className="w-full border-collapse text-left text-sm">
             <thead>
               <tr className="border-b border-gold-hairline text-xs uppercase tracking-wider text-gold">
-                <th className="py-2 pr-4">Nama Racikan</th>
-                <th className="py-2 pr-4">Brand & Parfum Asli</th>
+                <th className="py-2 pr-4">
+                  <button
+                    type="button"
+                    onClick={() => toggleSort("racikanNama")}
+                    className="flex items-center hover:text-gold-light"
+                  >
+                    Nama Racikan
+                    <SortIndicator
+                      active={sortField === "racikanNama"}
+                      direction={sortDirection}
+                    />
+                  </button>
+                </th>
+                <th className="py-2 pr-4">
+                  <button
+                    type="button"
+                    onClick={() => toggleSort("referensiBrand")}
+                    className="flex items-center hover:text-gold-light"
+                  >
+                    Brand & Parfum Asli
+                    <SortIndicator
+                      active={sortField === "referensiBrand"}
+                      direction={sortDirection}
+                    />
+                  </button>
+                </th>
                 <th className="py-2">Fragrantica</th>
               </tr>
             </thead>
             <tbody>
-              {filtered.map((item) => (
+              {sorted.map((item) => (
                 <tr key={item.racikanNama} className="border-b border-border">
                   <td className="py-2 pr-4 font-medium text-foreground">
                     {item.racikanNama}
