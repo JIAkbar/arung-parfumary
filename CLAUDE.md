@@ -667,3 +667,9 @@ Kalau tambah racikan baru lewat alur di atas, **tambah entry baru di
   minta user cek popup di layar mereka, retry setelah itu biasanya
   langsung jalan. `GIT_TERMINAL_PROMPT=0` tetap dipakai supaya command
   gagal cepat/jelas daripada hang tanpa output kalau kredensial expired
+- **User berencana pindah akun Claude** (bukan akun GitHub/Cloudflare —
+  akun Claude Code yang dipakai untuk kerja di project ini). Kalau sesi
+  berikutnya jalan di akun Claude yang baru, auto-memory dari akun lama
+  **tidak ikut pindah** — file ini (`CLAUDE.md`) tetap jadi sumber
+  konteks utama lintas sesi/akun, jadi pastikan tetap diupdate tiap sesi
+  seperti biasa (bukan cuma mengandalkan memory)
